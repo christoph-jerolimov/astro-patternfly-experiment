@@ -13,10 +13,14 @@ export default defineConfig({
   base: BASE_PATH,
   integrations: [react()],
   vite: {
-    ssr: {
+    resolve: {
       // PatternFly's packages import CSS from JavaScript. If they stay external
-      // during SSR, Node tries to `require()` those stylesheets and fails, so
-      // let Vite bundle and process them instead.
+      // during server rendering, Node tries to `require()` those stylesheets and
+      // the build fails, so let Vite bundle and process them instead.
+      //
+      // Set at the top level rather than under `ssr` so every Vite environment
+      // inherits it. Astro 7 prerenders static routes in its own environment,
+      // which `ssr.noExternal` alone does not reach.
       noExternal: [
         '@patternfly/react-core',
         '@patternfly/react-icons',

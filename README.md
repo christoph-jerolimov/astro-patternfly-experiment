@@ -35,6 +35,9 @@ src/
 └── theme.ts               # dark mode class and storage key
 
 e2e/
+├── global-setup.ts        # clears screenshots/, builds and serves the site
+├── global-teardown.ts     # stops the preview server
+├── preview.ts             # preview server lifecycle
 └── screenshots.spec.ts    # Playwright capture of every page in both themes
 
 screenshots/
@@ -57,7 +60,9 @@ A few things that are specific to this combination:
 - **PatternFly must be bundled for SSR.** Its packages import CSS from
   JavaScript. If they stay external during server rendering, Node tries to
   `require()` those stylesheets and the build fails, so they are listed under
-  `vite.ssr.noExternal` in `astro.config.mjs`.
+  `vite.resolve.noExternal` in `astro.config.mjs`. That has to be the top-level
+  `resolve`, not `ssr.noExternal`: Astro 7 prerenders static routes in its own
+  Vite environment, which the `ssr` options do not reach.
 - **No JSX inside `.astro` expressions.** Astro templates are not JSX, so a
   prop such as `icon={<RocketIcon />}` does not compile. Element-valued props
   live in the `.tsx` components instead.
@@ -91,8 +96,13 @@ the OS changing it. Once the visitor uses the toggle, their choice wins.
 
 `npm run screenshots` runs the Playwright test in `e2e/`, which captures every
 page in both themes into `screenshots/` as `<page>-light.png` and
-`<page>-dark.png`. Playwright's `webServer` builds the site and serves it with
+`<page>-dark.png`. Global setup builds the site and serves it with
 `astro preview` first, so the command needs no setup.
+
+The preview server is started from global setup rather than through Playwright's
+`webServer`, because `astro preview` always detaches into a background daemon and
+returns immediately — Playwright reads that exit as "the server died" and fails
+the run. Global teardown stops the daemon, so no server is left holding the port.
 
 The two themes are two Playwright **projects** differing only in `colorScheme`.
 That picks the theme through Chromium's `prefers-color-scheme` rather than by
@@ -101,7 +111,7 @@ pre-paint script lands on the right theme with nothing to click and nothing to
 wait for.
 
 Routes are read from `src/pages`, not from `dist/`, because Playwright collects
-tests before the `webServer` has built the site. New pages are picked up
+tests before global setup has built the site. New pages are picked up
 automatically; dynamic routes (`[slug].astro`) are skipped, since building a URL
 for them needs parameters.
 

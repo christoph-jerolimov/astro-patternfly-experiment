@@ -1,15 +1,16 @@
 import { defineConfig } from '@playwright/test';
 
+import { PREVIEW_PORT } from './e2e/preview';
 import { BASE_PATH } from './src/site';
 
-const PORT = 4327;
-const baseURL = `http://localhost:${PORT}${BASE_PATH}/`;
+const baseURL = `http://localhost:${PREVIEW_PORT}${BASE_PATH}/`;
 
 export default defineConfig({
   testDir: './e2e',
   // Kept out of ./test so this does not collect the Vitest suite, whose files
   // also end in .test.ts.
   globalSetup: './e2e/global-setup.ts',
+  globalTeardown: './e2e/global-teardown.ts',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   reporter: process.env.CI ? 'github' : 'list',
@@ -27,10 +28,4 @@ export default defineConfig({
     { name: 'light', use: { colorScheme: 'light' } },
     { name: 'dark', use: { colorScheme: 'dark' } },
   ],
-  webServer: {
-    command: `npm run build && npx astro preview --port ${PORT}`,
-    url: baseURL,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-  },
 });
