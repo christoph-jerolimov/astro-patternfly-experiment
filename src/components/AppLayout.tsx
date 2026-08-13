@@ -36,6 +36,7 @@ const pages = [
   { id: 'dashboard', label: 'Dashboard', href: withBase('/dashboard/') },
   { id: 'servers', label: 'Servers', href: withBase('/servers/') },
   { id: 'empty-states', label: 'Empty states', href: withBase('/empty-states/') },
+  { id: 'settings', label: 'Settings', href: withBase('/settings/') },
 ];
 
 /**
