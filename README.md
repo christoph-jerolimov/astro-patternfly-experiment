@@ -27,6 +27,7 @@ src/
 │   ├── DashboardStats.tsx        # headline metric cards
 │   ├── DashboardUtilization.tsx  # utilization bars
 │   ├── EmptyStateGallery.tsx     # the empty-state variants
+│   ├── LoginDemo.tsx             # sign-in screen (its own island)
 │   ├── FeatureCards.tsx          # static card gallery
 │   ├── HeroSection.tsx           # static intro block
 │   ├── ResourceLinks.tsx         # static links card
@@ -41,6 +42,7 @@ src/
 │   ├── dashboard.astro    # the dashboard demo
 │   ├── empty-states.astro # the empty-state demo
 │   ├── index.astro        # the default page
+│   ├── login.astro        # the sign-in demo, no app chrome
 │   ├── servers.astro      # the list view demo
 │   └── servers/
 │       └── detail.astro   # the detail view demo
@@ -57,6 +59,7 @@ screenshots/                # committed, regenerate with npm run screenshots
 ├── dashboard-{light,dark}.png
 ├── empty-states-{light,dark}.png
 ├── index-{light,dark}.png
+├── login-{light,dark}.png
 ├── servers-{light,dark}.png
 └── servers-detail-{light,dark}.png
 
@@ -128,6 +131,20 @@ the same message for all three sends people looking for the wrong problem.
 Each variant pairs the right icon with the right action — retry for a failure,
 clear-filters for a filtered-out list, create for an empty account — and the
 failure states carry PatternFly's `status` colours.
+
+## Login
+
+`/login/` is deliberately **not** wrapped in `AppLayout`. A sign-in screen has no
+navigation to offer yet, so it renders full-bleed without the masthead and
+sidebar, and a test asserts neither is present.
+
+That makes it unreachable from the app's own nav, so the sidebar lists it under a
+separate **Standalone** group — mixing it in with the app's pages would imply the
+chrome stays.
+
+Nothing is authenticated. Submitting shows the error state a real form would,
+because an inert login screen that does nothing is the least interesting half of
+the component to look at.
 
 ## Notes on combining Astro and PatternFly
 
