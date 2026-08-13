@@ -1,0 +1,61 @@
+---
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  Button,
+  Content,
+  Flex,
+  FlexItem,
+  Label,
+  PageSection,
+  Title,
+} from '@patternfly/react-core';
+
+import AppLayout from '../../components/AppLayout';
+import ServerDetailTabs from '../../components/ServerDetailTabs';
+import { servers, statusMeta } from '../../data/servers';
+import Layout from '../../layouts/Layout.astro';
+import { withBase } from '../../site';
+
+// A static route rather than [id].astro: the screenshot suite skips dynamic
+// routes, since building a URL for them needs parameters.
+const server = servers.find((candidate) => candidate.id === 'worker-7c9f')!;
+const status = statusMeta[server.status];
+---
+
+<Layout
+  title={`${server.name} — Astro + PatternFly`}
+  description="A PatternFly detail view with breadcrumbs, a page header and tabs."
+>
+  <AppLayout client:load activeItem="servers">
+    <PageSection variant="secondary">
+      <Breadcrumb>
+        <BreadcrumbItem to={withBase('/servers/')}>Servers</BreadcrumbItem>
+        <BreadcrumbItem isActive>{server.name}</BreadcrumbItem>
+      </Breadcrumb>
+
+      <Flex alignItems={{ default: 'alignItemsCenter' }} gap={{ default: 'gapMd' }}>
+        <FlexItem>
+          <Title headingLevel="h1" size="2xl">{server.name}</Title>
+        </FlexItem>
+        <FlexItem>
+          <Label color={status.color}>{status.label}</Label>
+        </FlexItem>
+        <FlexItem align={{ default: 'alignRight' }}>
+          <Flex gap={{ default: 'gapSm' }}>
+            <FlexItem><Button variant="secondary">Restart</Button></FlexItem>
+            <FlexItem><Button variant="danger">Delete</Button></FlexItem>
+          </Flex>
+        </FlexItem>
+      </Flex>
+
+      <Content component="p">
+        Readiness probe recovered after two restarts. Memory is close to its limit.
+      </Content>
+    </PageSection>
+
+    <PageSection isFilled>
+      <ServerDetailTabs client:load server={server} />
+    </PageSection>
+  </AppLayout>
+</Layout>
