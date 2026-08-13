@@ -1,0 +1,47 @@
+---
+import { Content, Divider, Grid, GridItem, PageSection, Title } from '@patternfly/react-core';
+
+import AppLayout from '../components/AppLayout';
+import DashboardActivity from '../components/DashboardActivity';
+import DashboardStats from '../components/DashboardStats';
+import DashboardUtilization from '../components/DashboardUtilization';
+import Layout from '../layouts/Layout.astro';
+
+const sections = [
+  { id: 'metrics', label: 'Metrics' },
+  { id: 'utilization', label: 'Utilization' },
+  { id: 'activity', label: 'Activity' },
+];
+---
+
+<Layout
+  title="Dashboard — Astro + PatternFly"
+  description="A PatternFly dashboard rendered by Astro, with sample metrics, utilization and activity."
+>
+  <AppLayout client:load activeItem="dashboard" sections={sections}>
+    <PageSection>
+      <Title headingLevel="h1" size="2xl">Dashboard</Title>
+      <Content component="p">
+        A PatternFly dashboard built from the same component library as the rest of the site. The
+        numbers are sample data — the point is the layout, not the values.
+      </Content>
+    </PageSection>
+
+    <Divider />
+
+    <PageSection id="metrics">
+      <DashboardStats />
+    </PageSection>
+
+    <PageSection variant="secondary" isFilled>
+      <Grid hasGutter>
+        <GridItem lg={6} id="utilization">
+          <DashboardUtilization />
+        </GridItem>
+        <GridItem lg={6} id="activity">
+          <DashboardActivity />
+        </GridItem>
+      </Grid>
+    </PageSection>
+  </AppLayout>
+</Layout>

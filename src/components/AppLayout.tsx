@@ -9,6 +9,7 @@ import {
   MastheadMain,
   MastheadToggle,
   Nav,
+  NavGroup,
   NavItem,
   NavList,
   Page,
@@ -29,18 +30,25 @@ import QuestionCircleIcon from '@patternfly/react-icons/dist/esm/icons/question-
 import { withBase } from '../site';
 import ThemeToggle from './ThemeToggle';
 
-const navItems = [
+/** The site's pages, in sidebar order. */
+const pages = [
   { id: 'overview', label: 'Overview', href: withBase('/') },
-  { id: 'components', label: 'Components', href: '#components' },
-  { id: 'islands', label: 'Islands', href: '#islands' },
-  { id: 'resources', label: 'Resources', href: '#resources' },
+  { id: 'dashboard', label: 'Dashboard', href: withBase('/dashboard/') },
 ];
+
+export interface Section {
+  /** Id of the element the link scrolls to. */
+  id: string;
+  label: string;
+}
 
 export interface AppLayoutProps {
   /** Page body, usually a set of <PageSection /> elements. */
   children?: ReactNode;
-  /** Id of the nav item to mark as active. */
+  /** Id of the page to mark as active in the sidebar. */
   activeItem?: string;
+  /** Anchors to the current page's sections, listed below the page links. */
+  sections?: Section[];
 }
 
 /**
@@ -48,9 +56,13 @@ export interface AppLayoutProps {
  * content area. This is the interactive part of the page, so it is hydrated as
  * an Astro island.
  */
-export default function AppLayout({ children, activeItem = 'overview' }: AppLayoutProps) {
+export default function AppLayout({
+  children,
+  activeItem = 'overview',
+  sections = [],
+}: AppLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [selectedItem, setSelectedItem] = useState(activeItem);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
   const masthead = (
     <Masthead>
@@ -118,18 +130,32 @@ export default function AppLayout({ children, activeItem = 'overview' }: AppLayo
       <PageSidebarBody>
         <Nav aria-label="Main navigation">
           <NavList>
-            {navItems.map((item) => (
+            {pages.map((page) => (
               <NavItem
-                key={item.id}
-                itemId={item.id}
-                to={item.href}
-                isActive={selectedItem === item.id}
-                onClick={() => setSelectedItem(item.id)}
+                key={page.id}
+                itemId={page.id}
+                to={page.href}
+                isActive={page.id === activeItem}
               >
-                {item.label}
+                {page.label}
               </NavItem>
             ))}
           </NavList>
+          {sections.length > 0 && (
+            <NavGroup title="On this page">
+              {sections.map((section) => (
+                <NavItem
+                  key={section.id}
+                  itemId={section.id}
+                  to={`#${section.id}`}
+                  isActive={activeSection === section.id}
+                  onClick={() => setActiveSection(section.id)}
+                >
+                  {section.label}
+                </NavItem>
+              ))}
+            </NavGroup>
+          )}
         </Nav>
       </PageSidebarBody>
     </PageSidebar>

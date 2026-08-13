@@ -8,9 +8,11 @@ const base = BASE_PATH.replace(/\/$/, '');
 const distDir = new URL('../dist/', import.meta.url);
 
 let html: string;
+let dashboard: string;
 
 beforeAll(async () => {
   html = await readFile(new URL('index.html', distDir), 'utf8');
+  dashboard = await readFile(new URL('dashboard/index.html', distDir), 'utf8');
 });
 
 describe('page shell', () => {
@@ -20,10 +22,33 @@ describe('page shell', () => {
     expect(html).toContain('pf-v6-c-page__sidebar');
   });
 
-  it('renders every navigation item', () => {
-    for (const label of ['Overview', 'Components', 'Islands', 'Resources']) {
+  it('links to every page from the sidebar, base-prefixed', () => {
+    expect(html).toContain(`href="${base}/"`);
+    expect(html).toContain(`href="${base}/dashboard/"`);
+    for (const label of ['Overview', 'Dashboard']) {
       expect(html).toContain(`>${label}<`);
     }
+  });
+
+  it('marks the current page as the active nav item', () => {
+    // The sidebar highlights whichever page is being served, so the two pages
+    // must not agree on which item is current.
+    const current = (page: string) =>
+      page.match(/pf-v6-c-nav__link pf-m-current"[^>]*>\s*<span[^>]*>([^<]+)</)?.[1];
+    expect(current(html)).toBe('Overview');
+    expect(current(dashboard)).toBe('Dashboard');
+  });
+
+  it('lists the sections of the page being served', () => {
+    for (const label of ['Features', 'Resources']) {
+      expect(html).toContain(`>${label}<`);
+    }
+    for (const label of ['Metrics', 'Utilization', 'Activity']) {
+      expect(dashboard).toContain(`>${label}<`);
+    }
+    // Section anchors are per page; the overview's must not leak onto the
+    // dashboard, where they would scroll nowhere.
+    expect(dashboard).not.toContain('href="#features"');
   });
 
   it('lets the main container fill the viewport', () => {
@@ -79,6 +104,43 @@ describe('base path handling', () => {
     for (const url of urls) {
       expect(url.startsWith(`${base}/`)).toBe(true);
     }
+  });
+});
+
+describe('dashboard', () => {
+  it('server-renders the stat cards, utilization bars and activity list', () => {
+    for (const label of ['Requests', 'p95 latency', 'Error rate', 'Builds today']) {
+      expect(dashboard).toContain(label);
+    }
+    expect(dashboard).toContain('pf-v6-c-progress');
+    expect(dashboard).toContain('pf-v6-c-data-list');
+  });
+
+  it('anchors every section the sidebar links to', () => {
+    for (const id of ['metrics', 'utilization', 'activity']) {
+      expect(dashboard).toContain(`href="#${id}"`);
+      expect(dashboard).toMatch(new RegExp(`id="${id}"`));
+    }
+  });
+
+  it('colours a trend by whether it is good, not by its sign', () => {
+    // Latency is down 8.1% and the error rate is up 0.8%. Both must not be read
+    // off the sign alone: falling latency is an improvement, while rising
+    // errors are a regression even though the number went up.
+    // Split on the marker PatternFly puts on each card root, so a chunk is one
+    // whole card rather than an inner card__title or card__body element.
+    const card = (label: string) =>
+      dashboard
+        .split('data-ouia-component-type="PF6/Card"')
+        .find((chunk) => chunk.includes(label)) ?? '';
+    expect(card('p95 latency')).toContain('pf-m-green');
+    expect(card('Error rate')).toContain('pf-m-red');
+  });
+
+  it('warns on the resources that are running out', () => {
+    // Storage is at 91% and memory at 78%, so one bar is red and one amber.
+    expect(dashboard).toContain('pf-m-danger');
+    expect(dashboard).toContain('pf-m-warning');
   });
 });
 

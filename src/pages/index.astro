@@ -6,6 +6,11 @@ import FeatureCards from '../components/FeatureCards';
 import HeroSection from '../components/HeroSection';
 import ResourceLinks from '../components/ResourceLinks';
 import Layout from '../layouts/Layout.astro';
+
+const sections = [
+  { id: 'features', label: 'Features' },
+  { id: 'resources', label: 'Resources' },
+];
 ---
 
 <Layout title="Astro + PatternFly">
@@ -13,14 +18,14 @@ import Layout from '../layouts/Layout.astro';
     Only the app shell carries a client directive, so PatternFly's masthead and
     side navigation are interactive while the sections below are static HTML.
   -->
-  <AppLayout client:load>
+  <AppLayout client:load activeItem="overview" sections={sections}>
     <PageSection isWidthLimited>
       <HeroSection />
     </PageSection>
 
     <Divider />
 
-    <PageSection id="components">
+    <PageSection id="features">
       <FeatureCards />
     </PageSection>
 
