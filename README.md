@@ -33,6 +33,7 @@ src/
 │   ├── ResourceLinks.tsx         # static links card
 │   ├── ServerDetailTabs.tsx      # detail view tabs (its own island)
 │   ├── ServersTable.tsx          # list view (its own island)
+│   ├── SettingsForm.tsx          # preferences form (its own island)
 │   └── ThemeToggle.tsx           # light/dark switch in the masthead
 ├── data/
 │   └── servers.ts                # sample fleet used by the list view
@@ -44,6 +45,7 @@ src/
 │   ├── index.astro        # the default page
 │   ├── login.astro        # the sign-in demo, no app chrome
 │   ├── servers.astro      # the list view demo
+│   ├── settings.astro     # the preferences form demo
 │   └── servers/
 │       └── detail.astro   # the detail view demo
 ├── site.ts                # BASE_PATH, shared with astro.config.mjs
@@ -61,6 +63,7 @@ screenshots/                # committed, regenerate with npm run screenshots
 ├── index-{light,dark}.png
 ├── login-{light,dark}.png
 ├── servers-{light,dark}.png
+├── settings-{light,dark}.png
 └── servers-detail-{light,dark}.png
 
 test/
@@ -145,6 +148,17 @@ chrome stays.
 Nothing is authenticated. Submitting shows the error state a real form would,
 because an inert login screen that does nothing is the least interesting half of
 the component to look at.
+
+## Settings
+
+`/settings/` is form controls outside a wizard: a text input with live
+validation, a select, a radio group and switches.
+
+The project name is checked **on every keystroke** rather than only on submit,
+so the error state is something you reach by typing rather than by deliberately
+saving something invalid, and Save disables itself while the name is invalid.
+Turning on maintenance mode reveals a warning that is hidden the rest of the
+time.
 
 ## Notes on combining Astro and PatternFly
 

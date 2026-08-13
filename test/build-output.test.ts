@@ -13,6 +13,7 @@ let serversPage: string;
 let detail: string;
 let emptyStates: string;
 let login: string;
+let settings: string;
 
 beforeAll(async () => {
   html = await readFile(new URL('index.html', distDir), 'utf8');
@@ -21,6 +22,7 @@ beforeAll(async () => {
   detail = await readFile(new URL('servers/detail/index.html', distDir), 'utf8');
   emptyStates = await readFile(new URL('empty-states/index.html', distDir), 'utf8');
   login = await readFile(new URL('login/index.html', distDir), 'utf8');
+  settings = await readFile(new URL('settings/index.html', distDir), 'utf8');
 });
 
 describe('page shell', () => {
@@ -264,6 +266,31 @@ describe('login', () => {
 
   it('keeps its brand image inside the base path', () => {
     expect(login).toContain(`src="${base}/logo.svg"`);
+  });
+});
+
+describe('settings', () => {
+  it('renders the form controls', () => {
+    expect(settings).toContain('pf-v6-c-form');
+    expect(settings).toContain('pf-v6-c-form-control');
+    expect(settings).toContain('pf-v6-c-switch');
+    expect(settings).toContain('pf-v6-c-radio');
+  });
+
+  it('starts valid, so the error state is something you reach by typing', () => {
+    // The name is checked on every keystroke rather than only on submit.
+    expect(settings).toContain('Lowercase letters, numbers and dashes.');
+    expect(settings).not.toContain('Only lowercase letters');
+  });
+
+  it('hides the conditional warning until maintenance mode is on', () => {
+    expect(settings).not.toContain('routes all traffic to the status page');
+  });
+
+  it('offers every region as a select option', () => {
+    for (const region of ['eu-central-1', 'us-east-1', 'ap-south-1', 'eu-west-2']) {
+      expect(settings).toContain(region);
+    }
   });
 });
 

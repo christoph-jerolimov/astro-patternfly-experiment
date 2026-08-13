@@ -1,0 +1,29 @@
+---
+import { Content, Divider, PageSection, Title } from '@patternfly/react-core';
+
+import AppLayout from '../components/AppLayout';
+import SettingsForm from '../components/SettingsForm';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Settings — Astro + PatternFly"
+  description="A PatternFly preferences form with validation, selects, radios and switches."
+>
+  <AppLayout client:load activeItem="settings">
+    <PageSection>
+      <Title headingLevel="h1" size="2xl">Settings</Title>
+      <Content component="p">
+        Form controls outside a wizard: text input with live validation, a select, a radio group and
+        switches. The project name is checked as you type, so the error state is reachable without
+        submitting anything.
+      </Content>
+    </PageSection>
+
+    <Divider />
+
+    <PageSection isFilled>
+      <SettingsForm client:load />
+    </PageSection>
+  </AppLayout>
+</Layout>
