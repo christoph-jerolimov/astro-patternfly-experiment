@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import { BASE_PATH } from '../src/site';
+import { DARK_CLASS, STORAGE_KEY } from '../src/theme';
 
 const base = BASE_PATH.replace(/\/$/, '');
 const distDir = new URL('../dist/', import.meta.url);
@@ -78,6 +79,31 @@ describe('base path handling', () => {
     for (const url of urls) {
       expect(url.startsWith(`${base}/`)).toBe(true);
     }
+  });
+});
+
+describe('dark mode', () => {
+  it('declares support for both color schemes', () => {
+    expect(html).toContain('<meta name="color-scheme" content="light dark">');
+  });
+
+  it('applies the theme before the body is parsed', () => {
+    // A theme applied after first paint shows up as a flash of the wrong one.
+    const script = html.indexOf(DARK_CLASS);
+    expect(script).toBeGreaterThan(-1);
+    expect(script).toBeLessThan(html.indexOf('<body'));
+  });
+
+  it('inlines the bootstrap script rather than fetching it', () => {
+    // An external script would be a render-blocking round trip in the head.
+    const head = html.slice(0, html.indexOf('</head>'));
+    expect(head).toContain(STORAGE_KEY);
+    expect(head).toContain('prefers-color-scheme: dark');
+    expect(head).not.toMatch(/<script[^>]*\ssrc=/);
+  });
+
+  it('server-renders the theme toggle', () => {
+    expect(html).toMatch(/aria-label="Switch to the (light|dark) theme"/);
   });
 });
 
