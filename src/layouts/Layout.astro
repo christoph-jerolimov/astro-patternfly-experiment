@@ -1,0 +1,40 @@
+---
+// PatternFly's base stylesheet. It ships a CSS reset plus all component styles
+// and design tokens, so it has to be loaded once for the whole document.
+import '@patternfly/react-core/dist/styles/base.css';
+
+import { withBase } from '../site';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Astro + PatternFly',
+  description = 'An Astro site using the PatternFly React component library.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  /* Let the PatternFly page fill the viewport. */
+  html,
+  body {
+    height: 100%;
+  }
+</style>
