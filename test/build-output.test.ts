@@ -18,6 +18,7 @@ let notFound: string;
 let forbidden: string;
 let serverError: string;
 let foundations: string;
+let controls: string;
 
 beforeAll(async () => {
   html = await readFile(new URL('index.html', distDir), 'utf8');
@@ -33,6 +34,7 @@ beforeAll(async () => {
   forbidden = await readFile(new URL('403/index.html', distDir), 'utf8');
   serverError = await readFile(new URL('500.html', distDir), 'utf8');
   foundations = await readFile(new URL('foundations/index.html', distDir), 'utf8');
+  controls = await readFile(new URL('controls/index.html', distDir), 'utf8');
 });
 
 describe('page shell', () => {
@@ -372,6 +374,34 @@ describe('foundations', () => {
     ]) {
       expect(foundations).toContain(name);
     }
+  });
+});
+
+describe('controls', () => {
+  it('shows every button variant', () => {
+    for (const variant of ['primary', 'secondary', 'tertiary', 'danger', 'warning', 'link']) {
+      expect(controls).toContain(`pf-m-${variant}`);
+    }
+  });
+
+  it('shows the states a resting-state-only page would hide', () => {
+    // Disabled, invalid and read-only are the half of the design that matters
+    // when something goes wrong.
+    expect(controls).toContain('disabled');
+    expect(controls).toContain('pf-m-error');
+    expect(controls).toContain('This is what an error looks like.');
+  });
+
+  it('renders the icon status colours', () => {
+    for (const status of ['success', 'warning', 'danger', 'info']) {
+      expect(controls).toContain(`pf-m-${status}`);
+    }
+  });
+
+  it('hydrates only the inputs, since the buttons and icons are inert', () => {
+    // The app shell plus the inputs card: buttons and icons need no client.
+    const islands = controls.match(/<astro-island/g) ?? [];
+    expect(islands.length).toBe(2);
   });
 });
 

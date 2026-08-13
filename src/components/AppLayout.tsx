@@ -40,7 +40,10 @@ const pages = [
 ];
 
 /** Pages showing the theme itself rather than an application screen. */
-const themePages = [{ id: 'foundations', label: 'Foundations', href: withBase('/foundations/') }];
+const themePages = [
+  { id: 'foundations', label: 'Foundations', href: withBase('/foundations/') },
+  { id: 'controls', label: 'Controls', href: withBase('/controls/') },
+];
 
 /**
  * Error pages. They keep the chrome — losing the navigation is the last thing
