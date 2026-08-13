@@ -23,9 +23,9 @@ export default function HeroSection() {
       </StackItem>
       <StackItem>
         <Content component="p">
-          This page is rendered by Astro and built entirely from PatternFly React components.
-          The masthead and side navigation are hydrated on the client; everything below ships
-          as static HTML.
+          This page is rendered by Astro and built entirely from PatternFly React components. The
+          masthead and side navigation are hydrated on the client; everything below ships as static
+          HTML.
         </Content>
       </StackItem>
     </Stack>

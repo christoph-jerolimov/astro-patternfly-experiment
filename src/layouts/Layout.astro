@@ -3,6 +3,8 @@
 // and design tokens, so it has to be loaded once for the whole document.
 import '@patternfly/react-core/dist/styles/base.css';
 
+import { withBase } from '../site';
+
 interface Props {
   title?: string;
   description?: string;
@@ -21,7 +23,7 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
     <title>{title}</title>
   </head>
   <body>
@@ -34,14 +36,5 @@ const {
   html,
   body {
     height: 100%;
-  }
-
-  /*
-    Astro wraps content slotted into an island in an <astro-slot> element. Left
-    as an inline box it becomes a flex/grid item inside PatternFly's page main
-    region and collapses the layout, so take it out of the box tree.
-  */
-  astro-slot {
-    display: contents;
   }
 </style>

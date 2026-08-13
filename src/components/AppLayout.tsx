@@ -26,8 +26,10 @@ import CogIcon from '@patternfly/react-icons/dist/esm/icons/cog-icon';
 import GithubIcon from '@patternfly/react-icons/dist/esm/icons/github-icon';
 import QuestionCircleIcon from '@patternfly/react-icons/dist/esm/icons/question-circle-icon';
 
+import { withBase } from '../site';
+
 const navItems = [
-  { id: 'overview', label: 'Overview', href: '/' },
+  { id: 'overview', label: 'Overview', href: withBase('/') },
   { id: 'components', label: 'Components', href: '#components' },
   { id: 'islands', label: 'Islands', href: '#islands' },
   { id: 'resources', label: 'Resources', href: '#resources' },
@@ -63,8 +65,12 @@ export default function AppLayout({ children, activeItem = 'overview' }: AppLayo
           </PageToggleButton>
         </MastheadToggle>
         <MastheadBrand>
-          <MastheadLogo href="/">
-            <Brand src="/logo.svg" alt="Astro + PatternFly" heights={{ default: '36px' }} />
+          <MastheadLogo href={withBase('/')}>
+            <Brand
+              src={withBase('/logo.svg')}
+              alt="Astro + PatternFly"
+              heights={{ default: '36px' }}
+            />
           </MastheadLogo>
         </MastheadBrand>
       </MastheadMain>
