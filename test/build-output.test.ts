@@ -12,6 +12,7 @@ let dashboard: string;
 let serversPage: string;
 let detail: string;
 let emptyStates: string;
+let login: string;
 
 beforeAll(async () => {
   html = await readFile(new URL('index.html', distDir), 'utf8');
@@ -19,6 +20,7 @@ beforeAll(async () => {
   serversPage = await readFile(new URL('servers/index.html', distDir), 'utf8');
   detail = await readFile(new URL('servers/detail/index.html', distDir), 'utf8');
   emptyStates = await readFile(new URL('empty-states/index.html', distDir), 'utf8');
+  login = await readFile(new URL('login/index.html', distDir), 'utf8');
 });
 
 describe('page shell', () => {
@@ -238,6 +240,30 @@ describe('empty states', () => {
     // Nothing here needs the client.
     const islands = emptyStates.match(/<astro-island/g) ?? [];
     expect(islands.length).toBe(1);
+  });
+});
+
+describe('login', () => {
+  it('renders the login page and its form', () => {
+    expect(login).toContain('pf-v6-c-login');
+    expect(login).toContain('Log in to your account');
+    expect(login).toContain('Username');
+    expect(login).toContain('Password');
+  });
+
+  it('renders without the app chrome', () => {
+    // A sign-in screen has no navigation to offer yet, so the masthead and
+    // sidebar must not be there.
+    expect(login).not.toContain('pf-v6-c-masthead');
+    expect(login).not.toContain('pf-v6-c-page__sidebar');
+  });
+
+  it('is still reachable from the sidebar of the pages that have one', () => {
+    expect(html).toContain(`href="${base}/login/"`);
+  });
+
+  it('keeps its brand image inside the base path', () => {
+    expect(login).toContain(`src="${base}/logo.svg"`);
   });
 });
 

@@ -38,6 +38,13 @@ const pages = [
   { id: 'empty-states', label: 'Empty states', href: withBase('/empty-states/') },
 ];
 
+/**
+ * Pages that render without the masthead and sidebar, so they can never be the
+ * active item here. Listed separately rather than mixed in with the app's own
+ * pages, which would imply the chrome stays.
+ */
+const standalonePages = [{ id: 'login', label: 'Log in', href: withBase('/login/') }];
+
 export interface Section {
   /** Id of the element the link scrolls to. */
   id: string;
@@ -158,6 +165,13 @@ export default function AppLayout({
               ))}
             </NavGroup>
           )}
+          <NavGroup title="Standalone">
+            {standalonePages.map((page) => (
+              <NavItem key={page.id} itemId={page.id} to={page.href}>
+                {page.label}
+              </NavItem>
+            ))}
+          </NavGroup>
         </Nav>
       </PageSidebarBody>
     </PageSidebar>

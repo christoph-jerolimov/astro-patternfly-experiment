@@ -1,0 +1,14 @@
+---
+import LoginDemo from '../components/LoginDemo';
+import Layout from '../layouts/Layout.astro';
+
+// Deliberately not wrapped in AppLayout: a sign-in screen has no navigation to
+// offer yet, so it renders full-bleed without the masthead and sidebar.
+---
+
+<Layout
+  title="Log in — Astro + PatternFly"
+  description="A PatternFly login screen rendered by Astro, outside the app chrome."
+>
+  <LoginDemo client:load />
+</Layout>
