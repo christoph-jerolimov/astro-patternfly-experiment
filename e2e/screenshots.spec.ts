@@ -58,6 +58,20 @@ test.describe('screenshots', () => {
       // Web fonts shift the layout, so let them settle before capturing.
       await page.evaluate(() => document.fonts.ready);
 
+      // PatternFly's Page scrolls its main region rather than the document, so
+      // the document never grows past the viewport and `fullPage` would cut a
+      // tall page off at the fold. Grow the viewport to the hidden height so the
+      // whole page is captured.
+      const hidden = await page.evaluate(() => {
+        const main = document.querySelector('#main-content');
+        return main ? main.scrollHeight - main.clientHeight : 0;
+      });
+      if (hidden > 0) {
+        const viewport = page.viewportSize()!;
+        await page.setViewportSize({ width: viewport.width, height: viewport.height + hidden });
+        await page.evaluate(() => document.fonts.ready);
+      }
+
       const file = new URL(`${route.name}-${testInfo.project.name}.png`, screenshotsDir);
       await page.screenshot({
         path: fileURLToPath(file),

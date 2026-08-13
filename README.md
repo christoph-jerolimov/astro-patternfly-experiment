@@ -22,14 +22,18 @@ An [Astro](https://astro.build) site whose default page is built with the
 ```
 src/
 ├── components/
-│   ├── AppLayout.tsx      # masthead + collapsible side nav (hydrated island)
-│   ├── FeatureCards.tsx   # static card gallery
-│   ├── HeroSection.tsx    # static intro block
-│   ├── ResourceLinks.tsx  # static links card
-│   └── ThemeToggle.tsx    # light/dark switch in the masthead
+│   ├── AppLayout.tsx             # masthead + side nav (hydrated island)
+│   ├── DashboardActivity.tsx     # recent activity list
+│   ├── DashboardStats.tsx        # headline metric cards
+│   ├── DashboardUtilization.tsx  # utilization bars
+│   ├── FeatureCards.tsx          # static card gallery
+│   ├── HeroSection.tsx           # static intro block
+│   ├── ResourceLinks.tsx         # static links card
+│   └── ThemeToggle.tsx           # light/dark switch in the masthead
 ├── layouts/
 │   └── Layout.astro       # document shell, base.css, pre-paint theme script
 ├── pages/
+│   ├── dashboard.astro    # the dashboard demo
 │   └── index.astro        # the default page
 ├── site.ts                # BASE_PATH, shared with astro.config.mjs
 └── theme.ts               # dark mode class and storage key
@@ -41,17 +45,37 @@ e2e/
 └── screenshots.spec.ts    # Playwright capture of every page in both themes
 
 screenshots/
-├── index-light.png        # committed, regenerate with npm run screenshots
+├── dashboard-light.png    # committed, regenerate with npm run screenshots
+├── dashboard-dark.png
+├── index-light.png
 └── index-dark.png
 
 test/
-├── build-output.test.ts   # assertions against dist/index.html
+├── build-output.test.ts   # assertions against the built pages
 └── global-setup.ts        # builds the site before the suite runs
 ```
 
 `AppLayout` is the only component with a `client:load` directive, so the
 masthead and side navigation are interactive while every other section is
 rendered to plain HTML at build time.
+
+## Sidebar
+
+The sidebar lists the site's pages, then the sections of whichever page is
+open. Pages live in `AppLayout`; each page passes its own `sections` and the
+`activeItem` to highlight. Section anchors are per page rather than global,
+because an anchor to a section the current page does not have scrolls nowhere.
+
+## Dashboard
+
+`/dashboard/` is a demo built from the same component library: headline metrics,
+utilization bars and a recent-activity list, all static HTML apart from the
+shared app shell.
+
+The metric cards colour a trend by whether it is **good**, not by its sign — a
+falling error rate or latency is an improvement, so tying the colour to the sign
+alone would paint every drop red. The arrow follows the direction of the number;
+the colour follows what that direction means.
 
 ## Notes on combining Astro and PatternFly
 
