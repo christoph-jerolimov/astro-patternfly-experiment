@@ -39,6 +39,9 @@ const pages = [
   { id: 'settings', label: 'Settings', href: withBase('/settings/') },
 ];
 
+/** Pages showing the theme itself rather than an application screen. */
+const themePages = [{ id: 'foundations', label: 'Foundations', href: withBase('/foundations/') }];
+
 /**
  * Error pages. They keep the chrome — losing the navigation is the last thing
  * someone who is already lost needs — but they are not destinations, so they
@@ -179,6 +182,18 @@ export default function AppLayout({
               ))}
             </NavGroup>
           )}
+          <NavGroup title="Theme">
+            {themePages.map((page) => (
+              <NavItem
+                key={page.id}
+                itemId={page.id}
+                to={page.href}
+                isActive={page.id === activeItem}
+              >
+                {page.label}
+              </NavItem>
+            ))}
+          </NavGroup>
           <NavGroup title="Error pages">
             {errorPages.map((page) => (
               <NavItem

@@ -35,6 +35,8 @@ src/
 │   ├── ServerDetailTabs.tsx      # detail view tabs (its own island)
 │   ├── ServersTable.tsx          # list view (its own island)
 │   ├── SettingsForm.tsx          # preferences form (its own island)
+│   ├── TokenSwatches.tsx         # colour tokens as live swatches
+│   ├── TypographySpecimens.tsx   # the type scale and body copy
 │   └── ThemeToggle.tsx           # light/dark switch in the masthead
 ├── data/
 │   └── servers.ts                # sample fleet used by the list view
@@ -46,6 +48,7 @@ src/
 │   ├── 500.astro
 │   ├── dashboard.astro    # the dashboard demo
 │   ├── empty-states.astro # the empty-state demo
+│   ├── foundations.astro  # type scale and colour tokens
 │   ├── index.astro        # the default page
 │   ├── login.astro        # the sign-in demo, no app chrome
 │   ├── servers.astro      # the list view demo
@@ -65,6 +68,7 @@ screenshots/                # committed, regenerate with npm run screenshots
 ├── 40{3,4}-{light,dark}.png
 ├── 500-{light,dark}.png
 ├── dashboard-{light,dark}.png
+├── foundations-{light,dark}.png
 ├── empty-states-{light,dark}.png
 ├── index-{light,dark}.png
 ├── login-{light,dark}.png
@@ -181,6 +185,18 @@ the site root rather than to directories like every other page, so they are
 linked by file rather than with a trailing slash, and the screenshot suite
 requests them the same way. GitHub Pages serves `404.html` for unknown paths
 under the project site, which is what makes the 404 real rather than a demo.
+
+## Foundations
+
+`/foundations/` shows the type scale and the colour tokens everything else is
+built from.
+
+Each swatch is painted with the token's **CSS variable**, not the value baked
+into `@patternfly/react-tokens`. That baked value is the light theme's, so a
+swatch using it would stay light in dark mode — and it is not even right in
+light mode: the JS token for the brand colour reads `#004d99` while the live
+variable resolves to `rgb(0, 102, 204)`. Painting with `var()` sidesteps both
+problems, and a test asserts no swatch hardcodes a value.
 
 ## Notes on combining Astro and PatternFly
 
