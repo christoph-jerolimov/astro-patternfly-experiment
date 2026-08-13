@@ -43,6 +43,7 @@ const pages = [
 const themePages = [
   { id: 'foundations', label: 'Foundations', href: withBase('/foundations/') },
   { id: 'controls', label: 'Controls', href: withBase('/controls/') },
+  { id: 'feedback', label: 'Feedback', href: withBase('/feedback/') },
 ];
 
 /**
