@@ -22,6 +22,7 @@ import { ActionsColumn, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/reac
 import SearchIcon from '@patternfly/react-icons/dist/esm/icons/search-icon';
 
 import { servers, statusMeta, type Server } from '../data/servers';
+import { withBase } from '../site';
 
 type SortableKey = 'name' | 'status' | 'region' | 'cpu' | 'memory';
 type StatusFilter = 'all' | Server['status'];
@@ -217,7 +218,10 @@ export default function ServersTable() {
                   isSelected: selected.includes(server.id),
                 }}
               />
-              <Td dataLabel="Name">{server.name}</Td>
+              <Td dataLabel="Name">
+                {/* Every row leads to the same demo detail page. */}
+                <a href={withBase('/servers/detail/')}>{server.name}</a>
+              </Td>
               <Td dataLabel="Status">
                 <Label isCompact color={statusMeta[server.status].color}>
                   {statusMeta[server.status].label}

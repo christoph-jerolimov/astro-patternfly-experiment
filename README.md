@@ -29,6 +29,7 @@ src/
 │   ├── FeatureCards.tsx          # static card gallery
 │   ├── HeroSection.tsx           # static intro block
 │   ├── ResourceLinks.tsx         # static links card
+│   ├── ServerDetailTabs.tsx      # detail view tabs (its own island)
 │   ├── ServersTable.tsx          # list view (its own island)
 │   └── ThemeToggle.tsx           # light/dark switch in the masthead
 ├── data/
@@ -38,7 +39,9 @@ src/
 ├── pages/
 │   ├── dashboard.astro    # the dashboard demo
 │   ├── index.astro        # the default page
-│   └── servers.astro      # the list view demo
+│   ├── servers.astro      # the list view demo
+│   └── servers/
+│       └── detail.astro   # the detail view demo
 ├── site.ts                # BASE_PATH, shared with astro.config.mjs
 └── theme.ts               # dark mode class and storage key
 
@@ -51,7 +54,8 @@ e2e/
 screenshots/                # committed, regenerate with npm run screenshots
 ├── dashboard-{light,dark}.png
 ├── index-{light,dark}.png
-└── servers-{light,dark}.png
+├── servers-{light,dark}.png
+└── servers-detail-{light,dark}.png
 
 test/
 ├── build-output.test.ts   # assertions against the built pages
@@ -60,8 +64,9 @@ test/
 
 `AppLayout` carries a `client:load` directive on every page, so the masthead and
 side navigation are interactive while the sections below are rendered to plain
-HTML at build time. `ServersTable` is the only other island, because a table you
-can filter and sort cannot be static.
+HTML at build time. The only other islands are `ServersTable` and
+`ServerDetailTabs`, because filtering, sorting and switching tabs cannot be
+static.
 
 ## Sidebar
 
@@ -95,6 +100,20 @@ The table comes from `@patternfly/react-table`, which is a separate package from
 Filtering clamps the page number rather than leaving the reader on an empty page
 when the result set shrinks below the current offset, and an empty state inside
 the table body offers to clear the filters.
+
+## Detail view
+
+`/servers/detail/` is where a row leads: a breadcrumb back to the list, a page
+header with the status and actions, and tabs for overview, metrics and logs.
+The sidebar keeps **Servers** highlighted, since a detail page belongs to its
+list.
+
+Only the tabbed area is an island — the breadcrumb and header never change, so
+they stay static HTML.
+
+It is a static route rather than `[id].astro` because the screenshot suite skips
+dynamic routes: building a URL for one needs parameters. Every row in the list
+links here.
 
 ## Notes on combining Astro and PatternFly
 

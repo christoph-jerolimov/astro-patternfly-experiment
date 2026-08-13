@@ -10,11 +10,13 @@ const distDir = new URL('../dist/', import.meta.url);
 let html: string;
 let dashboard: string;
 let serversPage: string;
+let detail: string;
 
 beforeAll(async () => {
   html = await readFile(new URL('index.html', distDir), 'utf8');
   dashboard = await readFile(new URL('dashboard/index.html', distDir), 'utf8');
   serversPage = await readFile(new URL('servers/index.html', distDir), 'utf8');
+  detail = await readFile(new URL('servers/detail/index.html', distDir), 'utf8');
 });
 
 describe('page shell', () => {
@@ -170,8 +172,39 @@ describe('servers list view', () => {
     expect(islands.length).toBe(2);
   });
 
-  it('does not link rows to a page that does not exist yet', () => {
-    expect(serversPage).not.toContain('/servers/detail/');
+  it('links rows to the detail view', () => {
+    expect(serversPage).toContain(`href="${base}/servers/detail/"`);
+  });
+});
+
+describe('server detail view', () => {
+  it('renders a breadcrumb back to the list', () => {
+    expect(detail).toContain('pf-v6-c-breadcrumb');
+    expect(detail).toContain(`href="${base}/servers/"`);
+    expect(detail).toContain('worker-7c9f');
+  });
+
+  it('renders all three tabs and the overview details', () => {
+    expect(detail).toContain('pf-v6-c-tabs');
+    for (const tab of ['Overview', 'Metrics', 'Logs']) {
+      expect(detail).toContain(`>${tab}<`);
+    }
+    expect(detail).toContain('pf-v6-c-description-list');
+  });
+
+  it('keeps Servers highlighted in the sidebar', () => {
+    // A detail page belongs to its list, so the sidebar must not lose the
+    // section the reader is in.
+    const current = detail.match(
+      /pf-v6-c-nav__link pf-m-current"[^>]*>\s*<span[^>]*>([^<]+)</,
+    )?.[1];
+    expect(current).toBe('Servers');
+  });
+
+  it('only hydrates the tabbed area, not the header above it', () => {
+    // The breadcrumb and page header never change, so they stay static.
+    const islands = detail.match(/<astro-island/g) ?? [];
+    expect(islands.length).toBe(2);
   });
 });
 
