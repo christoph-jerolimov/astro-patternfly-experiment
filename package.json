@@ -13,7 +13,7 @@
     "test": "vitest run",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "screenshots": "node scripts/screenshots.mjs"
+    "screenshots": "playwright test"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.0",
@@ -25,10 +25,10 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
+    "@playwright/test": "^1.62.1",
     "@types/node": "^26.2.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
-    "playwright": "^1.62.1",
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^5.9.2",
