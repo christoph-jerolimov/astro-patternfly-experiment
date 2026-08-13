@@ -26,6 +26,7 @@ src/
 │   ├── DashboardActivity.tsx     # recent activity list
 │   ├── DashboardStats.tsx        # headline metric cards
 │   ├── DashboardUtilization.tsx  # utilization bars
+│   ├── EmptyStateGallery.tsx     # the empty-state variants
 │   ├── FeatureCards.tsx          # static card gallery
 │   ├── HeroSection.tsx           # static intro block
 │   ├── ResourceLinks.tsx         # static links card
@@ -38,6 +39,7 @@ src/
 │   └── Layout.astro       # document shell, base.css, pre-paint theme script
 ├── pages/
 │   ├── dashboard.astro    # the dashboard demo
+│   ├── empty-states.astro # the empty-state demo
 │   ├── index.astro        # the default page
 │   ├── servers.astro      # the list view demo
 │   └── servers/
@@ -53,6 +55,7 @@ e2e/
 
 screenshots/                # committed, regenerate with npm run screenshots
 ├── dashboard-{light,dark}.png
+├── empty-states-{light,dark}.png
 ├── index-{light,dark}.png
 ├── servers-{light,dark}.png
 └── servers-detail-{light,dark}.png
@@ -114,6 +117,17 @@ they stay static HTML.
 It is a static route rather than `[id].astro` because the screenshot suite skips
 dynamic routes: building a URL for one needs parameters. Every row in the list
 links here.
+
+## Empty states
+
+`/empty-states/` shows the states a list can be in when it has nothing to show,
+side by side. They are worth distinguishing: **no results** is the reader's own
+filters, **no data** is an empty account, and **no access** is neither. Showing
+the same message for all three sends people looking for the wrong problem.
+
+Each variant pairs the right icon with the right action — retry for a failure,
+clear-filters for a filtered-out list, create for an empty account — and the
+failure states carry PatternFly's `status` colours.
 
 ## Notes on combining Astro and PatternFly
 

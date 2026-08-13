@@ -35,6 +35,7 @@ const pages = [
   { id: 'overview', label: 'Overview', href: withBase('/') },
   { id: 'dashboard', label: 'Dashboard', href: withBase('/dashboard/') },
   { id: 'servers', label: 'Servers', href: withBase('/servers/') },
+  { id: 'empty-states', label: 'Empty states', href: withBase('/empty-states/') },
 ];
 
 export interface Section {

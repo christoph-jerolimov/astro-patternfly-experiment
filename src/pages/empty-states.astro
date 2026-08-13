@@ -1,0 +1,32 @@
+---
+import { Content, Divider, PageSection, Title } from '@patternfly/react-core';
+
+import AppLayout from '../components/AppLayout';
+import EmptyStateGallery from '../components/EmptyStateGallery';
+import Layout from '../layouts/Layout.astro';
+
+const sections = [{ id: 'states', label: 'States' }];
+---
+
+<Layout
+  title="Empty states — Astro + PatternFly"
+  description="The states a list can be in when it has nothing to show."
+>
+  <AppLayout client:load activeItem="empty-states" sections={sections}>
+    <PageSection isWidthLimited>
+      <Title headingLevel="h1" size="2xl">Empty states</Title>
+      <Content component="p">
+        A list with nothing in it can mean several different things, and they are worth telling
+        apart. <strong>No results</strong> is the reader's own filters, <strong>no data</strong> is an
+        empty account, and <strong>no access</strong> is neither. Showing the same message for all three
+        sends people looking for the wrong problem.
+      </Content>
+    </PageSection>
+
+    <Divider />
+
+    <PageSection id="states" isFilled>
+      <EmptyStateGallery />
+    </PageSection>
+  </AppLayout>
+</Layout>
