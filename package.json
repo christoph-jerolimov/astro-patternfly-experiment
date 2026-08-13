@@ -19,6 +19,7 @@
     "@astrojs/react": "^6.0.2",
     "@patternfly/react-core": "^6.6.1",
     "@patternfly/react-icons": "^6.6.1",
+    "@patternfly/react-table": "^6.6.1",
     "astro": "^7.2.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"

@@ -9,10 +9,12 @@ const distDir = new URL('../dist/', import.meta.url);
 
 let html: string;
 let dashboard: string;
+let serversPage: string;
 
 beforeAll(async () => {
   html = await readFile(new URL('index.html', distDir), 'utf8');
   dashboard = await readFile(new URL('dashboard/index.html', distDir), 'utf8');
+  serversPage = await readFile(new URL('servers/index.html', distDir), 'utf8');
 });
 
 describe('page shell', () => {
@@ -141,6 +143,35 @@ describe('dashboard', () => {
     // Storage is at 91% and memory at 78%, so one bar is red and one amber.
     expect(dashboard).toContain('pf-m-danger');
     expect(dashboard).toContain('pf-m-warning');
+  });
+});
+
+describe('servers list view', () => {
+  it('server-renders the table with its toolbar', () => {
+    expect(serversPage).toContain('pf-v6-c-table');
+    expect(serversPage).toContain('pf-v6-c-toolbar');
+    for (const column of ['Name', 'Status', 'Region', 'CPU', 'Memory']) {
+      expect(serversPage).toContain(`>${column}<`);
+    }
+  });
+
+  it('renders only the first page of rows', () => {
+    // 8 servers at 5 per page, so the initial render must not dump them all.
+    const rows = serversPage.match(/data-label="Name"/g) ?? [];
+    expect(rows).toHaveLength(5);
+    expect(serversPage).toContain('api-gateway');
+    expect(serversPage).not.toContain('worker-7c9f');
+  });
+
+  it('ships the table as a second island so it can filter and sort', () => {
+    // Static HTML cannot filter; the table is nested inside the shell island
+    // and has to hydrate on its own.
+    const islands = serversPage.match(/<astro-island/g) ?? [];
+    expect(islands.length).toBe(2);
+  });
+
+  it('does not link rows to a page that does not exist yet', () => {
+    expect(serversPage).not.toContain('/servers/detail/');
   });
 });
 
