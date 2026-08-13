@@ -1,0 +1,44 @@
+---
+import { Content, Divider, Grid, GridItem, PageSection, Title } from '@patternfly/react-core';
+
+import AlertSpecimens from '../components/AlertSpecimens';
+import AppLayout from '../components/AppLayout';
+import LoadingSpecimens from '../components/LoadingSpecimens';
+import OverlaySpecimens from '../components/OverlaySpecimens';
+import Layout from '../layouts/Layout.astro';
+
+const sections = [
+  { id: 'alerts', label: 'Alerts' },
+  { id: 'overlays', label: 'Overlays' },
+  { id: 'loading', label: 'Loading' },
+];
+---
+
+<Layout
+  title="Feedback — Astro + PatternFly"
+  description="PatternFly alerts, overlays and loading states."
+>
+  <AppLayout client:load activeItem="feedback" sections={sections}>
+    <PageSection isWidthLimited>
+      <Title headingLevel="h1" size="2xl">Feedback</Title>
+      <Content component="p">
+        How the interface tells you something: alerts and banners in the page, overlays on top of
+        it, and the placeholders it shows while waiting. Overlays only exist after a click, which
+        makes them the parts most likely to break under server rendering.
+      </Content>
+    </PageSection>
+
+    <Divider />
+
+    <PageSection id="alerts">
+      <Grid hasGutter>
+        <GridItem lg={6}><AlertSpecimens client:load /></GridItem>
+        <GridItem lg={6} id="overlays"><OverlaySpecimens client:load /></GridItem>
+      </Grid>
+    </PageSection>
+
+    <PageSection id="loading" variant="secondary" isFilled>
+      <LoadingSpecimens />
+    </PageSection>
+  </AppLayout>
+</Layout>

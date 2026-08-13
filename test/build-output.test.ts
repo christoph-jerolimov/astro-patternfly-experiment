@@ -19,6 +19,7 @@ let forbidden: string;
 let serverError: string;
 let foundations: string;
 let controls: string;
+let feedback: string;
 
 beforeAll(async () => {
   html = await readFile(new URL('index.html', distDir), 'utf8');
@@ -35,6 +36,7 @@ beforeAll(async () => {
   serverError = await readFile(new URL('500.html', distDir), 'utf8');
   foundations = await readFile(new URL('foundations/index.html', distDir), 'utf8');
   controls = await readFile(new URL('controls/index.html', distDir), 'utf8');
+  feedback = await readFile(new URL('feedback/index.html', distDir), 'utf8');
 });
 
 describe('page shell', () => {
@@ -402,6 +404,34 @@ describe('controls', () => {
     // The app shell plus the inputs card: buttons and icons need no client.
     const islands = controls.match(/<astro-island/g) ?? [];
     expect(islands.length).toBe(2);
+  });
+});
+
+describe('feedback', () => {
+  it('shows every alert variant plus banners', () => {
+    for (const variant of ['danger', 'warning', 'success', 'info']) {
+      expect(feedback).toContain(`An inline ${variant} alert`);
+    }
+    expect(feedback).toContain('pf-v6-c-banner');
+  });
+
+  it('gives the dismissible alert something to do', () => {
+    // PatternFly does not remove a dismissed alert itself, so a close button
+    // without an onClose renders and then does nothing.
+    expect(feedback).toContain('A dismissible alert');
+    expect(feedback).toContain('Close alert');
+  });
+
+  it('keeps overlays closed until they are asked for', () => {
+    // A modal in the server-rendered HTML would flash on load.
+    expect(feedback).not.toContain('pf-v6-c-modal-box');
+    expect(feedback).toContain('Open modal');
+  });
+
+  it('shows the waiting states', () => {
+    expect(feedback).toContain('pf-v6-c-spinner');
+    expect(feedback).toContain('pf-v6-c-skeleton');
+    expect(feedback).toContain('pf-v6-c-progress-stepper');
   });
 });
 

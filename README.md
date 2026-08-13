@@ -22,6 +22,7 @@ An [Astro](https://astro.build) site whose default page is built with the
 ```
 src/
 ├── components/
+│   ├── AlertSpecimens.tsx        # alerts and banners (its own island)
 │   ├── AppLayout.tsx             # masthead + side nav (hydrated island)
 │   ├── ButtonSpecimens.tsx       # button variants and states
 │   ├── DashboardActivity.tsx     # recent activity list
@@ -34,6 +35,8 @@ src/
 │   ├── HeroSection.tsx           # static intro block
 │   ├── IconSpecimens.tsx         # icon sizes and status colours
 │   ├── InputSpecimens.tsx        # form controls (its own island)
+│   ├── LoadingSpecimens.tsx      # spinners, skeletons, progress
+│   ├── OverlaySpecimens.tsx      # modal, tooltip, popover (its own island)
 │   ├── ResourceLinks.tsx         # static links card
 │   ├── ServerDetailTabs.tsx      # detail view tabs (its own island)
 │   ├── ServersTable.tsx          # list view (its own island)
@@ -52,6 +55,7 @@ src/
 │   ├── controls.astro     # buttons, inputs and icons
 │   ├── dashboard.astro    # the dashboard demo
 │   ├── empty-states.astro # the empty-state demo
+│   ├── feedback.astro     # alerts, overlays and loading states
 │   ├── foundations.astro  # type scale and colour tokens
 │   ├── index.astro        # the default page
 │   ├── login.astro        # the sign-in demo, no app chrome
@@ -75,6 +79,7 @@ screenshots/                # committed, regenerate with npm run screenshots
 ├── dashboard-{light,dark}.png
 ├── foundations-{light,dark}.png
 ├── empty-states-{light,dark}.png
+├── feedback-{light,dark}.png
 ├── index-{light,dark}.png
 ├── login-{light,dark}.png
 ├── servers-{light,dark}.png
@@ -212,6 +217,22 @@ specimen as the happy path.
 
 Only the inputs card is an island: buttons and icons need no client, so they stay
 static HTML.
+
+## Feedback
+
+`/feedback/` covers how the interface tells you something: alerts and banners in
+the page, overlays on top of it, and the placeholders shown while waiting.
+
+Overlays only exist after a click, which makes them the parts of a component
+library most likely to break under server rendering — worth having in a demo
+that actually hydrates rather than one that is only screenshotted. A test
+asserts no modal is in the server-rendered HTML, since one that were would flash
+on load.
+
+PatternFly does not remove a dismissed alert for you: an `AlertActionCloseButton`
+without an `onClose` renders a close button that does nothing. The dismissible
+example wires it up, and offers to bring the alert back so the demo is
+repeatable without a reload.
 
 ## Notes on combining Astro and PatternFly
 
