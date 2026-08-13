@@ -1,0 +1,28 @@
+---
+import { Content, Divider, PageSection, Title } from '@patternfly/react-core';
+
+import AppLayout from '../components/AppLayout';
+import ServersTable from '../components/ServersTable';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Servers — Astro + PatternFly"
+  description="A PatternFly list view with filtering, sorting, selection and pagination."
+>
+  <AppLayout client:load activeItem="servers">
+    <PageSection>
+      <Title headingLevel="h1" size="2xl">Servers</Title>
+      <Content component="p">
+        A list view with filtering, sorting, bulk selection and pagination. Unlike the other pages,
+        the table needs the client, so it ships as its own island nested inside the app shell.
+      </Content>
+    </PageSection>
+
+    <Divider />
+
+    <PageSection isFilled>
+      <ServersTable client:load />
+    </PageSection>
+  </AppLayout>
+</Layout>

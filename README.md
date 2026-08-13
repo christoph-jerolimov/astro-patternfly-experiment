@@ -29,12 +29,16 @@ src/
 │   ├── FeatureCards.tsx          # static card gallery
 │   ├── HeroSection.tsx           # static intro block
 │   ├── ResourceLinks.tsx         # static links card
+│   ├── ServersTable.tsx          # list view (its own island)
 │   └── ThemeToggle.tsx           # light/dark switch in the masthead
+├── data/
+│   └── servers.ts                # sample fleet used by the list view
 ├── layouts/
 │   └── Layout.astro       # document shell, base.css, pre-paint theme script
 ├── pages/
 │   ├── dashboard.astro    # the dashboard demo
-│   └── index.astro        # the default page
+│   ├── index.astro        # the default page
+│   └── servers.astro      # the list view demo
 ├── site.ts                # BASE_PATH, shared with astro.config.mjs
 └── theme.ts               # dark mode class and storage key
 
@@ -44,20 +48,20 @@ e2e/
 ├── preview.ts             # preview server lifecycle
 └── screenshots.spec.ts    # Playwright capture of every page in both themes
 
-screenshots/
-├── dashboard-light.png    # committed, regenerate with npm run screenshots
-├── dashboard-dark.png
-├── index-light.png
-└── index-dark.png
+screenshots/                # committed, regenerate with npm run screenshots
+├── dashboard-{light,dark}.png
+├── index-{light,dark}.png
+└── servers-{light,dark}.png
 
 test/
 ├── build-output.test.ts   # assertions against the built pages
 └── global-setup.ts        # builds the site before the suite runs
 ```
 
-`AppLayout` is the only component with a `client:load` directive, so the
-masthead and side navigation are interactive while every other section is
-rendered to plain HTML at build time.
+`AppLayout` carries a `client:load` directive on every page, so the masthead and
+side navigation are interactive while the sections below are rendered to plain
+HTML at build time. `ServersTable` is the only other island, because a table you
+can filter and sort cannot be static.
 
 ## Sidebar
 
@@ -76,6 +80,21 @@ The metric cards colour a trend by whether it is **good**, not by its sign — a
 falling error rate or latency is an improvement, so tying the colour to the sign
 alone would paint every drop red. The arrow follows the direction of the number;
 the colour follows what that direction means.
+
+## List view
+
+`/servers/` is a table with filtering, sorting, bulk selection and pagination.
+It is the one page whose content genuinely needs the client, so `ServersTable`
+carries its own `client:load` and hydrates **nested inside** the app shell
+island. Astro supports that: a nested island waits for its parent to hydrate and
+then hydrates itself.
+
+The table comes from `@patternfly/react-table`, which is a separate package from
+`react-core` and therefore also has to be listed in `vite.resolve.noExternal`.
+
+Filtering clamps the page number rather than leaving the reader on an empty page
+when the result set shrinks below the current offset, and an empty state inside
+the table body offers to clear the filters.
 
 ## Notes on combining Astro and PatternFly
 

@@ -34,6 +34,7 @@ import ThemeToggle from './ThemeToggle';
 const pages = [
   { id: 'overview', label: 'Overview', href: withBase('/') },
   { id: 'dashboard', label: 'Dashboard', href: withBase('/dashboard/') },
+  { id: 'servers', label: 'Servers', href: withBase('/servers/') },
 ];
 
 export interface Section {

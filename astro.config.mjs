@@ -25,6 +25,7 @@ export default defineConfig({
         '@patternfly/react-core',
         '@patternfly/react-icons',
         '@patternfly/react-styles',
+        '@patternfly/react-table',
         '@patternfly/react-tokens',
       ],
     },
