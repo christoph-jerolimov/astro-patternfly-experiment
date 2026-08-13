@@ -17,6 +17,7 @@ let settings: string;
 let notFound: string;
 let forbidden: string;
 let serverError: string;
+let foundations: string;
 
 beforeAll(async () => {
   html = await readFile(new URL('index.html', distDir), 'utf8');
@@ -31,6 +32,7 @@ beforeAll(async () => {
   notFound = await readFile(new URL('404.html', distDir), 'utf8');
   forbidden = await readFile(new URL('403/index.html', distDir), 'utf8');
   serverError = await readFile(new URL('500.html', distDir), 'utf8');
+  foundations = await readFile(new URL('foundations/index.html', distDir), 'utf8');
 });
 
 describe('page shell', () => {
@@ -335,6 +337,41 @@ describe('error pages', () => {
     expect(html).toContain(`href="${base}/404.html"`);
     expect(html).toContain(`href="${base}/500.html"`);
     expect(html).not.toContain(`href="${base}/404/"`);
+  });
+});
+
+describe('foundations', () => {
+  it('shows the type scale and body copy', () => {
+    for (const size of ['Title 4xl', 'Title 3xl', 'Title md']) {
+      expect(foundations).toContain(size);
+    }
+    expect(foundations).toContain('<blockquote>');
+    expect(foundations).toContain('<pre>');
+  });
+
+  it('paints swatches with the token variable, not its baked value', () => {
+    // @patternfly/react-tokens carries the light theme's value, so a swatch
+    // painted with it would stay light in dark mode. var() recolours.
+    expect(foundations).toMatch(/background:\s*var\(--pf-t--global--color--brand--default\)/);
+    expect(foundations).toContain('var(--pf-t--global--background--color--primary--default)');
+  });
+
+  it('never hardcodes a token value as a colour', () => {
+    const swatchStyles = foundations.match(/background:\s*[^;"]+/g) ?? [];
+    expect(swatchStyles.length).toBeGreaterThan(0);
+    for (const style of swatchStyles) {
+      expect(style).toContain('var(--pf-t--');
+    }
+  });
+
+  it('labels each swatch with its CSS variable name', () => {
+    for (const name of [
+      '--pf-t--global--color--brand--default',
+      '--pf-t--global--text--color--regular',
+      '--pf-t--global--border--color--default',
+    ]) {
+      expect(foundations).toContain(name);
+    }
   });
 });
 

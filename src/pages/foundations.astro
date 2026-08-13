@@ -1,0 +1,41 @@
+---
+import { Content, Divider, PageSection, Title } from '@patternfly/react-core';
+
+import AppLayout from '../components/AppLayout';
+import TokenSwatches from '../components/TokenSwatches';
+import TypographySpecimens from '../components/TypographySpecimens';
+import Layout from '../layouts/Layout.astro';
+
+const sections = [
+  { id: 'typography', label: 'Typography' },
+  { id: 'tokens', label: 'Colour tokens' },
+];
+---
+
+<Layout
+  title="Foundations — Astro + PatternFly"
+  description="PatternFly's type scale and colour tokens, shown in both themes."
+>
+  <AppLayout client:load activeItem="foundations" sections={sections}>
+    <PageSection isWidthLimited>
+      <Title headingLevel="h1" size="2xl">Foundations</Title>
+      <Content component="p">
+        The type scale and the colour tokens everything else is built from. Switch the theme in the
+        masthead: the swatches are painted with the tokens' CSS variables, so they recolour rather
+        than staying at their light-theme values.
+      </Content>
+    </PageSection>
+
+    <Divider />
+
+    <PageSection id="typography">
+      <Title headingLevel="h2" size="lg">Typography</Title>
+      <TypographySpecimens />
+    </PageSection>
+
+    <PageSection id="tokens" variant="secondary" isFilled>
+      <Title headingLevel="h2" size="lg">Colour tokens</Title>
+      <TokenSwatches />
+    </PageSection>
+  </AppLayout>
+</Layout>
