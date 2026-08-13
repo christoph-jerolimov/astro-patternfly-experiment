@@ -11,12 +11,14 @@ let html: string;
 let dashboard: string;
 let serversPage: string;
 let detail: string;
+let emptyStates: string;
 
 beforeAll(async () => {
   html = await readFile(new URL('index.html', distDir), 'utf8');
   dashboard = await readFile(new URL('dashboard/index.html', distDir), 'utf8');
   serversPage = await readFile(new URL('servers/index.html', distDir), 'utf8');
   detail = await readFile(new URL('servers/detail/index.html', distDir), 'utf8');
+  emptyStates = await readFile(new URL('empty-states/index.html', distDir), 'utf8');
 });
 
 describe('page shell', () => {
@@ -205,6 +207,37 @@ describe('server detail view', () => {
     // The breadcrumb and page header never change, so they stay static.
     const islands = detail.match(/<astro-island/g) ?? [];
     expect(islands.length).toBe(2);
+  });
+});
+
+describe('empty states', () => {
+  it('renders one card per state', () => {
+    const cards = emptyStates.match(/pf-v6-c-empty-state\b/g) ?? [];
+    expect(cards).toHaveLength(6);
+  });
+
+  it('distinguishes the states rather than repeating one message', () => {
+    // The whole point of the page: no-results, no-data and no-access are
+    // different problems and must not share a message.
+    for (const title of [
+      'No servers yet',
+      'No results found',
+      'You do not have access',
+      'Unable to load servers',
+    ]) {
+      expect(emptyStates).toContain(title);
+    }
+  });
+
+  it('carries the status colours through to the failure states', () => {
+    expect(emptyStates).toContain('pf-m-danger');
+    expect(emptyStates).toContain('pf-m-warning');
+  });
+
+  it('stays static apart from the app shell', () => {
+    // Nothing here needs the client.
+    const islands = emptyStates.match(/<astro-island/g) ?? [];
+    expect(islands.length).toBe(1);
   });
 });
 
