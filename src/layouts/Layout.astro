@@ -1,0 +1,47 @@
+---
+// PatternFly's base stylesheet. It ships a CSS reset plus all component styles
+// and design tokens, so it has to be loaded once for the whole document.
+import '@patternfly/react-core/dist/styles/base.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Astro + PatternFly',
+  description = 'An Astro site using the PatternFly React component library.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  /* Let the PatternFly page fill the viewport. */
+  html,
+  body {
+    height: 100%;
+  }
+
+  /*
+    Astro wraps content slotted into an island in an <astro-slot> element. Left
+    as an inline box it becomes a flex/grid item inside PatternFly's page main
+    region and collapses the layout, so take it out of the box tree.
+  */
+  astro-slot {
+    display: contents;
+  }
+</style>

@@ -1,0 +1,31 @@
+---
+import { Divider, PageSection } from '@patternfly/react-core';
+
+import AppLayout from '../components/AppLayout';
+import FeatureCards from '../components/FeatureCards';
+import HeroSection from '../components/HeroSection';
+import ResourceLinks from '../components/ResourceLinks';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Astro + PatternFly">
+  <!--
+    Only the app shell carries a client directive, so PatternFly's masthead and
+    side navigation are interactive while the sections below are static HTML.
+  -->
+  <AppLayout client:load>
+    <PageSection isWidthLimited>
+      <HeroSection />
+    </PageSection>
+
+    <Divider />
+
+    <PageSection id="components">
+      <FeatureCards />
+    </PageSection>
+
+    <PageSection id="resources" variant="secondary" isFilled>
+      <ResourceLinks />
+    </PageSection>
+  </AppLayout>
+</Layout>
