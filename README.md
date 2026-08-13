@@ -23,6 +23,7 @@ An [Astro](https://astro.build) site whose default page is built with the
 src/
 ├── components/
 │   ├── AppLayout.tsx             # masthead + side nav (hydrated island)
+│   ├── ButtonSpecimens.tsx       # button variants and states
 │   ├── DashboardActivity.tsx     # recent activity list
 │   ├── DashboardStats.tsx        # headline metric cards
 │   ├── DashboardUtilization.tsx  # utilization bars
@@ -31,6 +32,8 @@ src/
 │   ├── LoginDemo.tsx             # sign-in screen (its own island)
 │   ├── FeatureCards.tsx          # static card gallery
 │   ├── HeroSection.tsx           # static intro block
+│   ├── IconSpecimens.tsx         # icon sizes and status colours
+│   ├── InputSpecimens.tsx        # form controls (its own island)
 │   ├── ResourceLinks.tsx         # static links card
 │   ├── ServerDetailTabs.tsx      # detail view tabs (its own island)
 │   ├── ServersTable.tsx          # list view (its own island)
@@ -46,6 +49,7 @@ src/
 │   ├── 403.astro          # error pages, 404 and 500 are reserved names
 │   ├── 404.astro
 │   ├── 500.astro
+│   ├── controls.astro     # buttons, inputs and icons
 │   ├── dashboard.astro    # the dashboard demo
 │   ├── empty-states.astro # the empty-state demo
 │   ├── foundations.astro  # type scale and colour tokens
@@ -67,6 +71,7 @@ e2e/
 screenshots/                # committed, regenerate with npm run screenshots
 ├── 40{3,4}-{light,dark}.png
 ├── 500-{light,dark}.png
+├── controls-{light,dark}.png
 ├── dashboard-{light,dark}.png
 ├── foundations-{light,dark}.png
 ├── empty-states-{light,dark}.png
@@ -197,6 +202,16 @@ swatch using it would stay light in dark mode — and it is not even right in
 light mode: the JS token for the brand colour reads `#004d99` while the live
 variable resolves to `rgb(0, 102, 204)`. Painting with `var()` sidesteps both
 problems, and a test asserts no swatch hardcodes a value.
+
+## Controls
+
+`/controls/` shows buttons, inputs and icons — including **disabled, invalid and
+read-only**, the states a resting-state-only page hides. Those are the half of
+the design that matters when something goes wrong, so they are as much of the
+specimen as the happy path.
+
+Only the inputs card is an island: buttons and icons need no client, so they stay
+static HTML.
 
 ## Notes on combining Astro and PatternFly
 

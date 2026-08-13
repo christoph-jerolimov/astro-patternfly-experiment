@@ -1,0 +1,44 @@
+---
+import { Content, Divider, Grid, GridItem, PageSection, Title } from '@patternfly/react-core';
+
+import AppLayout from '../components/AppLayout';
+import ButtonSpecimens from '../components/ButtonSpecimens';
+import IconSpecimens from '../components/IconSpecimens';
+import InputSpecimens from '../components/InputSpecimens';
+import Layout from '../layouts/Layout.astro';
+
+const sections = [
+  { id: 'buttons', label: 'Buttons' },
+  { id: 'inputs', label: 'Inputs' },
+  { id: 'icons', label: 'Icons' },
+];
+---
+
+<Layout
+  title="Controls — Astro + PatternFly"
+  description="PatternFly buttons, form controls and icons, including their disabled and invalid states."
+>
+  <AppLayout client:load activeItem="controls" sections={sections}>
+    <PageSection isWidthLimited>
+      <Title headingLevel="h1" size="2xl">Controls</Title>
+      <Content component="p">
+        Buttons, inputs and icons, including the states that are easy to forget: disabled, invalid
+        and read-only. A page showing only the resting state hides the half of the design that
+        matters when something goes wrong.
+      </Content>
+    </PageSection>
+
+    <Divider />
+
+    <PageSection id="buttons">
+      <ButtonSpecimens />
+    </PageSection>
+
+    <PageSection id="inputs" variant="secondary">
+      <Grid hasGutter>
+        <GridItem lg={6}><InputSpecimens client:load /></GridItem>
+        <GridItem lg={6} id="icons"><IconSpecimens /></GridItem>
+      </Grid>
+    </PageSection>
+  </AppLayout>
+</Layout>
