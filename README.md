@@ -15,6 +15,7 @@ An [Astro](https://astro.build) site whose default page is built with the
 | `npm test`             | Build, then assert on the generated HTML |
 | `npm run format`       | Format the sources with Prettier         |
 | `npm run format:check` | Fail if anything is not formatted        |
+| `npm run screenshots`  | Recapture `screenshots/` in both themes  |
 
 ## Project structure
 
@@ -24,12 +25,21 @@ src/
 │   ├── AppLayout.tsx      # masthead + collapsible side nav (hydrated island)
 │   ├── FeatureCards.tsx   # static card gallery
 │   ├── HeroSection.tsx    # static intro block
-│   └── ResourceLinks.tsx  # static links card
+│   ├── ResourceLinks.tsx  # static links card
+│   └── ThemeToggle.tsx    # light/dark switch in the masthead
 ├── layouts/
-│   └── Layout.astro       # document shell, imports PatternFly's base.css
+│   └── Layout.astro       # document shell, base.css, pre-paint theme script
 ├── pages/
 │   └── index.astro        # the default page
-└── site.ts                # BASE_PATH, shared with astro.config.mjs
+├── site.ts                # BASE_PATH, shared with astro.config.mjs
+└── theme.ts               # dark mode class and storage key
+
+scripts/
+└── screenshots.mjs        # Playwright capture of every page in both themes
+
+screenshots/
+├── light/index.png        # committed, regenerate with npm run screenshots
+└── dark/index.png
 
 test/
 ├── build-output.test.ts   # assertions against dist/index.html
@@ -59,6 +69,42 @@ A few things that are specific to this combination:
   is sized to its content by default, so `isFilled` on a `PageSection` is not
   enough on its own; `Page` needs `isContentFilled` for the section to have room
   to grow into.
+
+## Dark mode
+
+PatternFly v6 redefines its design tokens under `:root:where(.pf-v6-theme-dark)`,
+so switching themes means toggling one class on the document element. Three
+pieces make that work:
+
+- `src/theme.ts` holds the class name, the `localStorage` key and the helpers.
+- An inline script in `Layout.astro` applies the theme **before the body is
+  parsed**, which is what stops the page flashing the wrong theme on load. It
+  has to be dependency-free to run that early, so it repeats the few lines of
+  logic rather than importing them; the values it depends on are passed in from
+  `theme.ts` via `define:vars`, so they cannot drift.
+- `ThemeToggle` in the masthead switches and remembers the choice.
+
+Without an explicit choice the site follows `prefers-color-scheme` and reacts to
+the OS changing it. Once the visitor uses the toggle, their choice wins.
+
+## Screenshots
+
+`npm run screenshots` builds the site, serves it, and captures every page in
+both themes into `screenshots/<theme>/`. Pages are discovered from `dist/`, so
+new pages are picked up automatically.
+
+The themes come from Chromium's `prefers-color-scheme` rather than from clicking
+the toggle: a fresh browser context has no stored choice, so the pre-paint script
+lands on the right theme with nothing to click and nothing to wait for.
+
+The images are committed, so a diff shows how a change affects the rendered page.
+CI does not regenerate or compare them — font rendering differs between machines,
+which would make a pixel comparison fail for reasons unrelated to the change.
+**Rerun the command by hand when a change affects the page.**
+
+If the environment already ships a browser, point at it with
+`CHROMIUM_PATH=/path/to/chromium npm run screenshots` instead of installing
+Playwright's own.
 
 ## Continuous integration and deployment
 

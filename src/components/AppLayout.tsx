@@ -27,6 +27,7 @@ import GithubIcon from '@patternfly/react-icons/dist/esm/icons/github-icon';
 import QuestionCircleIcon from '@patternfly/react-icons/dist/esm/icons/question-circle-icon';
 
 import { withBase } from '../site';
+import ThemeToggle from './ThemeToggle';
 
 const navItems = [
   { id: 'overview', label: 'Overview', href: withBase('/') },
@@ -82,6 +83,9 @@ export default function AppLayout({ children, activeItem = 'overview' }: AppLayo
               align={{ default: 'alignEnd' }}
               gap={{ default: 'gapNone', md: 'gapMd' }}
             >
+              <ToolbarItem>
+                <ThemeToggle />
+              </ToolbarItem>
               <ToolbarItem>
                 <Button variant="plain" aria-label="Notifications" icon={<BellIcon />} />
               </ToolbarItem>

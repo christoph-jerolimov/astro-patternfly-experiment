@@ -4,6 +4,7 @@
 import '@patternfly/react-core/dist/styles/base.css';
 
 import { withBase } from '../site';
+import { DARK_CLASS, STORAGE_KEY } from '../theme';
 
 interface Props {
   title?: string;
@@ -23,8 +24,29 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
     <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
     <title>{title}</title>
+    {
+      /*
+      Runs before the body is parsed so the page never paints in the wrong
+      theme. It has to be inline and dependency-free for that reason, which is
+      why it repeats the small amount of logic in src/theme.ts rather than
+      importing it; the values it depends on are passed in from there.
+    */
+    }
+    <script is:inline define:vars={{ storageKey: STORAGE_KEY, darkClass: DARK_CLASS }}>
+      (() => {
+        const stored = localStorage.getItem(storageKey);
+        const theme =
+          stored === 'light' || stored === 'dark'
+            ? stored
+            : matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
+        document.documentElement.classList.toggle(darkClass, theme === 'dark');
+      })();
+    </script>
   </head>
   <body>
     <slot />
