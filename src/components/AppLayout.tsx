@@ -40,6 +40,19 @@ const pages = [
 ];
 
 /**
+ * Error pages. They keep the chrome — losing the navigation is the last thing
+ * someone who is already lost needs — but they are not destinations, so they
+ * sit apart from the app's own pages.
+ */
+const errorPages = [
+  // Astro reserves 404 and 500: they build to /404.html and /500.html rather
+  // than to directories, so they are not linked with a trailing slash.
+  { id: '404', label: '404 Not found', href: withBase('/404.html') },
+  { id: '403', label: '403 Forbidden', href: withBase('/403/') },
+  { id: '500', label: '500 Server error', href: withBase('/500.html') },
+];
+
+/**
  * Pages that render without the masthead and sidebar, so they can never be the
  * active item here. Listed separately rather than mixed in with the app's own
  * pages, which would imply the chrome stays.
@@ -166,6 +179,18 @@ export default function AppLayout({
               ))}
             </NavGroup>
           )}
+          <NavGroup title="Error pages">
+            {errorPages.map((page) => (
+              <NavItem
+                key={page.id}
+                itemId={page.id}
+                to={page.href}
+                isActive={page.id === activeItem}
+              >
+                {page.label}
+              </NavItem>
+            ))}
+          </NavGroup>
           <NavGroup title="Standalone">
             {standalonePages.map((page) => (
               <NavItem key={page.id} itemId={page.id} to={page.href}>

@@ -1,0 +1,19 @@
+---
+import { PageSection } from '@patternfly/react-core';
+
+import AppLayout from '../components/AppLayout';
+import ErrorState from '../components/ErrorState';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Error 500 — Astro + PatternFly" description="A PatternFly 500 error page.">
+  <!--
+    Error pages keep the masthead and sidebar. Losing the navigation is the
+    last thing someone who is already lost needs.
+  -->
+  <AppLayout client:load activeItem="500">
+    <PageSection isFilled>
+      <ErrorState code="500" />
+    </PageSection>
+  </AppLayout>
+</Layout>

@@ -1,0 +1,19 @@
+---
+import { PageSection } from '@patternfly/react-core';
+
+import AppLayout from '../components/AppLayout';
+import ErrorState from '../components/ErrorState';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Error 404 — Astro + PatternFly" description="A PatternFly 404 error page.">
+  <!--
+    Error pages keep the masthead and sidebar. Losing the navigation is the
+    last thing someone who is already lost needs.
+  -->
+  <AppLayout client:load activeItem="404">
+    <PageSection isFilled>
+      <ErrorState code="404" />
+    </PageSection>
+  </AppLayout>
+</Layout>

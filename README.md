@@ -27,6 +27,7 @@ src/
 │   ├── DashboardStats.tsx        # headline metric cards
 │   ├── DashboardUtilization.tsx  # utilization bars
 │   ├── EmptyStateGallery.tsx     # the empty-state variants
+│   ├── ErrorState.tsx            # shared body of the error pages
 │   ├── LoginDemo.tsx             # sign-in screen (its own island)
 │   ├── FeatureCards.tsx          # static card gallery
 │   ├── HeroSection.tsx           # static intro block
@@ -40,6 +41,9 @@ src/
 ├── layouts/
 │   └── Layout.astro       # document shell, base.css, pre-paint theme script
 ├── pages/
+│   ├── 403.astro          # error pages, 404 and 500 are reserved names
+│   ├── 404.astro
+│   ├── 500.astro
 │   ├── dashboard.astro    # the dashboard demo
 │   ├── empty-states.astro # the empty-state demo
 │   ├── index.astro        # the default page
@@ -58,6 +62,8 @@ e2e/
 └── screenshots.spec.ts    # Playwright capture of every page in both themes
 
 screenshots/                # committed, regenerate with npm run screenshots
+├── 40{3,4}-{light,dark}.png
+├── 500-{light,dark}.png
 ├── dashboard-{light,dark}.png
 ├── empty-states-{light,dark}.png
 ├── index-{light,dark}.png
@@ -159,6 +165,22 @@ so the error state is something you reach by typing rather than by deliberately
 saving something invalid, and Save disables itself while the name is invalid.
 Turning on maintenance mode reveals a warning that is hidden the rest of the
 time.
+
+## Error pages
+
+`404`, `403` and `500` share one component and differ in icon, colour and words.
+Each shows the **code as well as the sentence**: "page not found" on its own
+leaves people guessing whether they mistyped the address or the server broke.
+
+They keep the masthead and sidebar, unlike the login page — losing the
+navigation is the last thing someone who is already lost needs — and each offers
+two ways back.
+
+**Astro reserves `404` and `500`.** They build to `/404.html` and `/500.html` at
+the site root rather than to directories like every other page, so they are
+linked by file rather than with a trailing slash, and the screenshot suite
+requests them the same way. GitHub Pages serves `404.html` for unknown paths
+under the project site, which is what makes the 404 real rather than a demo.
 
 ## Notes on combining Astro and PatternFly
 
