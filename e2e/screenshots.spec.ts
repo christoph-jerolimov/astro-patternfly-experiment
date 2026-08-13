@@ -36,11 +36,21 @@ function findRoutes(dir = pagesDir, prefix = ''): Route[] {
     const match = entry.name.match(/^(.*)\.(astro|md|mdx)$/);
     if (!match) continue;
 
-    const segment = match[1] === 'index' ? '' : `${match[1]}/`;
+    // Astro reserves 404 and 500: they build to /404.html and /500.html at the
+    // site root rather than to directories, so they are not requested with a
+    // trailing slash.
+    const isReserved = prefix === '' && (match[1] === '404' || match[1] === '500');
+    const segment = match[1] === 'index' ? '' : isReserved ? `${match[1]}.html` : `${match[1]}/`;
     const path = `${prefix}${segment}`;
     routes.push({
       path,
-      name: path === '' ? 'index' : path.replace(/\/$/, '').replace(/\//g, '-'),
+      name:
+        path === ''
+          ? 'index'
+          : path
+              .replace(/\.html$/, '')
+              .replace(/\/$/, '')
+              .replace(/\//g, '-'),
     });
   }
 

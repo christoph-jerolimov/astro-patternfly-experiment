@@ -14,6 +14,9 @@ let detail: string;
 let emptyStates: string;
 let login: string;
 let settings: string;
+let notFound: string;
+let forbidden: string;
+let serverError: string;
 
 beforeAll(async () => {
   html = await readFile(new URL('index.html', distDir), 'utf8');
@@ -23,6 +26,11 @@ beforeAll(async () => {
   emptyStates = await readFile(new URL('empty-states/index.html', distDir), 'utf8');
   login = await readFile(new URL('login/index.html', distDir), 'utf8');
   settings = await readFile(new URL('settings/index.html', distDir), 'utf8');
+  // Astro reserves 404 and 500, building them to the site root rather than to
+  // directories like every other page.
+  notFound = await readFile(new URL('404.html', distDir), 'utf8');
+  forbidden = await readFile(new URL('403/index.html', distDir), 'utf8');
+  serverError = await readFile(new URL('500.html', distDir), 'utf8');
 });
 
 describe('page shell', () => {
@@ -291,6 +299,42 @@ describe('settings', () => {
     for (const region of ['eu-central-1', 'us-east-1', 'ap-south-1', 'eu-west-2']) {
       expect(settings).toContain(region);
     }
+  });
+});
+
+describe('error pages', () => {
+  it('says something different for each code', () => {
+    expect(notFound).toContain('Page not found');
+    expect(forbidden).toContain('You do not have access');
+    expect(serverError).toContain('Something went wrong');
+  });
+
+  it('shows the code as well as the sentence', () => {
+    // "Page not found" alone leaves people guessing whether they mistyped the
+    // address or the server is broken.
+    expect(notFound).toContain('Error 404');
+    expect(forbidden).toContain('Error 403');
+    expect(serverError).toContain('Error 500');
+  });
+
+  it('keeps the navigation, unlike the login page', () => {
+    // Losing the navigation is the last thing someone already lost needs.
+    for (const page of [notFound, forbidden, serverError]) {
+      expect(page).toContain('pf-v6-c-masthead');
+      expect(page).toContain('pf-v6-c-page__sidebar');
+    }
+  });
+
+  it('offers a way out that stays inside the base path', () => {
+    expect(notFound).toContain(`href="${base}/"`);
+    expect(notFound).toContain(`href="${base}/servers/"`);
+  });
+
+  it('links the reserved pages by file rather than as directories', () => {
+    // /404/ and /500/ do not exist; Astro emits them at the site root.
+    expect(html).toContain(`href="${base}/404.html"`);
+    expect(html).toContain(`href="${base}/500.html"`);
+    expect(html).not.toContain(`href="${base}/404/"`);
   });
 });
 
