@@ -36,15 +36,21 @@ const status = statusMeta[server.status];
 
       <Flex alignItems={{ default: 'alignItemsCenter' }} gap={{ default: 'gapMd' }}>
         <FlexItem>
-          <Title headingLevel="h1" size="2xl">{server.name}</Title>
+          <Title headingLevel="h1" size="2xl">
+            {server.name}
+          </Title>
         </FlexItem>
         <FlexItem>
           <Label color={status.color}>{status.label}</Label>
         </FlexItem>
         <FlexItem align={{ default: 'alignRight' }}>
           <Flex gap={{ default: 'gapSm' }}>
-            <FlexItem><Button variant="secondary">Restart</Button></FlexItem>
-            <FlexItem><Button variant="danger">Delete</Button></FlexItem>
+            <FlexItem>
+              <Button variant="secondary">Restart</Button>
+            </FlexItem>
+            <FlexItem>
+              <Button variant="danger">Delete</Button>
+            </FlexItem>
           </Flex>
         </FlexItem>
       </Flex>

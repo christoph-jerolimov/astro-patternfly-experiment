@@ -16,23 +16,23 @@
     "screenshots": "playwright test"
   },
   "dependencies": {
-    "@astrojs/react": "^6.0.2",
-    "@patternfly/react-core": "^6.6.1",
-    "@patternfly/react-icons": "^6.6.1",
-    "@patternfly/react-table": "^6.6.1",
-    "astro": "^7.2.1",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "@astrojs/react": "^7.1.2",
+    "@patternfly/react-core": "^6.7.0",
+    "@patternfly/react-icons": "^6.7.0",
+    "@patternfly/react-table": "^6.7.0",
+    "astro": "^7.4.5",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.10",
-    "@playwright/test": "^1.62.1",
-    "@types/node": "^26.2.0",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
-    "prettier": "^3.9.6",
-    "prettier-plugin-astro": "^0.14.1",
+    "@astrojs/check": "^0.9.12",
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "prettier": "^3.9.10",
+    "prettier-plugin-astro": "^1.1.2",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.10"
+    "vitest": "^5.1.0"
   }
 }
