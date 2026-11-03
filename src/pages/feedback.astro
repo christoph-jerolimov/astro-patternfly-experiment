@@ -20,7 +20,9 @@ const sections = [
 >
   <AppLayout client:load activeItem="feedback" sections={sections}>
     <PageSection isWidthLimited>
-      <Title headingLevel="h1" size="2xl">Feedback</Title>
+      <Title headingLevel="h1" size="2xl">
+        Feedback
+      </Title>
       <Content component="p">
         How the interface tells you something: alerts and banners in the page, overlays on top of
         it, and the placeholders it shows while waiting. Overlays only exist after a click, which
@@ -32,8 +34,12 @@ const sections = [
 
     <PageSection id="alerts">
       <Grid hasGutter>
-        <GridItem lg={6}><AlertSpecimens client:load /></GridItem>
-        <GridItem lg={6} id="overlays"><OverlaySpecimens client:load /></GridItem>
+        <GridItem lg={6}>
+          <AlertSpecimens client:load />
+        </GridItem>
+        <GridItem lg={6} id="overlays">
+          <OverlaySpecimens client:load />
+        </GridItem>
       </Grid>
     </PageSection>
 

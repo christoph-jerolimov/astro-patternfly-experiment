@@ -20,7 +20,9 @@ const sections = [
 >
   <AppLayout client:load activeItem="controls" sections={sections}>
     <PageSection isWidthLimited>
-      <Title headingLevel="h1" size="2xl">Controls</Title>
+      <Title headingLevel="h1" size="2xl">
+        Controls
+      </Title>
       <Content component="p">
         Buttons, inputs and icons, including the states that are easy to forget: disabled, invalid
         and read-only. A page showing only the resting state hides the half of the design that
@@ -36,8 +38,12 @@ const sections = [
 
     <PageSection id="inputs" variant="secondary">
       <Grid hasGutter>
-        <GridItem lg={6}><InputSpecimens client:load /></GridItem>
-        <GridItem lg={6} id="icons"><IconSpecimens /></GridItem>
+        <GridItem lg={6}>
+          <InputSpecimens client:load />
+        </GridItem>
+        <GridItem lg={6} id="icons">
+          <IconSpecimens />
+        </GridItem>
       </Grid>
     </PageSection>
   </AppLayout>
