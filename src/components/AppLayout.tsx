@@ -28,7 +28,7 @@ import GithubIcon from '@patternfly/react-icons/dist/esm/icons/github-icon';
 import QuestionCircleIcon from '@patternfly/react-icons/dist/esm/icons/question-circle-icon';
 
 import { withBase } from '../site';
-import ThemeToggle from './ThemeToggle';
+import ThemeMenu from './ThemeMenu';
 
 /** The site's pages, in sidebar order. */
 const pages = [
@@ -126,7 +126,7 @@ export default function AppLayout({
               gap={{ default: 'gapNone', md: 'gapMd' }}
             >
               <ToolbarItem>
-                <ThemeToggle />
+                <ThemeMenu />
               </ToolbarItem>
               <ToolbarItem>
                 <Button variant="plain" aria-label="Notifications" icon={<BellIcon />} />
