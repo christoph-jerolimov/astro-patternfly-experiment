@@ -43,7 +43,7 @@ src/
 │   ├── SettingsForm.tsx          # preferences form (its own island)
 │   ├── TokenSwatches.tsx         # colour tokens as live swatches
 │   ├── TypographySpecimens.tsx   # the type scale and body copy
-│   └── ThemeToggle.tsx           # light/dark switch in the masthead
+│   └── ThemeMenu.tsx             # theme switcher in the masthead
 ├── data/
 │   └── servers.ts                # sample fleet used by the list view
 ├── layouts/
@@ -64,13 +64,14 @@ src/
 │   └── servers/
 │       └── detail.astro   # the detail view demo
 ├── site.ts                # BASE_PATH, shared with astro.config.mjs
-└── theme.ts               # dark mode class and storage key
+└── theme.ts               # the four theme classes and storage keys
 
 e2e/
 ├── global-setup.ts        # clears screenshots/, builds and serves the site
 ├── global-teardown.ts     # stops the preview server
 ├── preview.ts             # preview server lifecycle
-└── screenshots.spec.ts    # Playwright capture of every page in both themes
+├── screenshots.spec.ts    # every page in light and dark
+└── theme-matrix.spec.ts   # two pages across every theme modifier
 
 screenshots/                # committed, regenerate with npm run screenshots
 ├── 40{3,4}-{light,dark}.png
@@ -256,28 +257,62 @@ A few things that are specific to this combination:
   enough on its own; `Page` needs `isContentFilled` for the section to have room
   to grow into.
 
-## Dark mode
+## Themes
 
-PatternFly v6 redefines its design tokens under `:root:where(.pf-v6-theme-dark)`,
-so switching themes means toggling one class on the document element. Three
-pieces make that work:
+PatternFly v6 redefines its design tokens under `:root:where(.pf-v6-theme-<name>)`,
+so every theme is one class on the document element. There are **four**, and they
+compose:
 
-- `src/theme.ts` holds the class name, the `localStorage` key and the helpers.
-- An inline script in `Layout.astro` applies the theme **before the body is
-  parsed**, which is what stops the page flashing the wrong theme on load. It
+| Class                       | What it changes                                     |
+| --------------------------- | --------------------------------------------------- |
+| `pf-v6-theme-dark`          | the dark palette                                    |
+| `pf-v6-theme-high-contrast` | thicker borders and stronger hover and focus states |
+| `pf-v6-theme-glass`         | translucent surfaces over a backdrop image          |
+| `pf-v6-theme-felt`          | the other surface treatment                         |
+
+Dark is a mode; the other three are independent switches on top of it. The
+masthead menu sets all four and remembers the choice.
+
+Three pieces make it work:
+
+- `src/theme.ts` holds the class names, the two `localStorage` keys and the
+  helpers.
+- An inline script in `Layout.astro` applies **all four classes before the body
+  is parsed**, which is what stops the page flashing the wrong theme on load. It
   has to be dependency-free to run that early, so it repeats the few lines of
   logic rather than importing them; the values it depends on are passed in from
   `theme.ts` via `define:vars`, so they cannot drift.
-- `ThemeToggle` in the masthead switches and remembers the choice.
+- `ThemeMenu` in the masthead switches and remembers.
 
-Without an explicit choice the site follows `prefers-color-scheme` and reacts to
-the OS changing it. Once the visitor uses the toggle, their choice wins.
+Without an explicit choice the site follows the OS for **both** axes:
+`prefers-color-scheme` for dark, and `prefers-contrast: more` for high contrast.
+That second one matters because PatternFly ships no `prefers-contrast` query of
+its own — a reader who has asked their OS for more contrast would otherwise get
+none of it.
+
+Glass needs a backdrop to be translucent against, and PatternFly's background
+SVGs are referenced from `base.css` as relative URLs. Astro bundles them with
+the base path applied, so glass works on the deployed site with no extra
+plumbing.
+
+One caveat if you adopt glass in earnest: translucent surfaces at 0.5–0.6 alpha
+over a patterned backdrop cut text contrast, which pulls against high contrast.
+The two compose mechanically, but the combination is worth looking at rather
+than assuming.
 
 ## Screenshots
 
-`npm run screenshots` runs the Playwright test in `e2e/`, which captures every
-page in both themes into `screenshots/` as `<page>-light.png` and
-`<page>-dark.png`. Global setup builds the site and serves it with
+`npm run screenshots` runs the Playwright tests in `e2e/`, which capture every
+page in light and dark into `screenshots/` as `<page>-light.png` and
+`<page>-dark.png`, plus a modifier matrix as
+`<page>-<scheme>-<modifier>.png`.
+
+The matrix covers two pages rather than all thirteen: the dashboard for the app
+chrome, cards and status colours, and controls for the borders and affordances
+high contrast actually changes. Multiplying every page by every modifier would
+commit a hundred images to show the same two things. It seeds the stored choice
+through `localStorage` rather than toggling classes by hand, so the capture goes
+through the same pre-paint path a visitor would. Global setup builds the site and serves it with
 `astro preview` first, so the command needs no setup.
 
 The preview server is started from global setup rather than through Playwright's

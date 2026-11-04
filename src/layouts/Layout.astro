@@ -4,7 +4,15 @@
 import '@patternfly/react-core/dist/styles/base.css';
 
 import { withBase } from '../site';
-import { DARK_CLASS, STORAGE_KEY } from '../theme';
+import {
+  DARK_CLASS,
+  MODIFIERS,
+  MODIFIERS_STORAGE_KEY,
+  STORAGE_KEY,
+  THEME_CLASS_PREFIX,
+} from '../theme';
+
+const modifierIds = MODIFIERS.map((modifier) => modifier.id);
 
 interface Props {
   title?: string;
@@ -33,8 +41,22 @@ const {
       why it repeats the small amount of logic in src/theme.ts rather than
       importing it; the values it depends on are passed in from there.
     */}
-    <script is:inline define:vars={{ storageKey: STORAGE_KEY, darkClass: DARK_CLASS }}>
+    <script
+      is:inline
+      define:vars={{
+        themeConfig: {
+          storageKey: STORAGE_KEY,
+          darkClass: DARK_CLASS,
+          modifiersKey: MODIFIERS_STORAGE_KEY,
+          modifierIds,
+          prefix: THEME_CLASS_PREFIX,
+        },
+      }}
+    >
       (() => {
+        const { storageKey, darkClass, modifiersKey, modifierIds, prefix } = themeConfig;
+        const root = document.documentElement;
+
         const stored = localStorage.getItem(storageKey);
         const theme =
           stored === 'light' || stored === 'dark'
@@ -42,7 +64,22 @@ const {
             : matchMedia('(prefers-color-scheme: dark)').matches
               ? 'dark'
               : 'light';
-        document.documentElement.classList.toggle(darkClass, theme === 'dark');
+        root.classList.toggle(darkClass, theme === 'dark');
+
+        // No stored choice means high contrast follows the OS. PatternFly ships
+        // no prefers-contrast query of its own, so without this a reader who
+        // asked for more contrast would not get it.
+        const storedModifiers = localStorage.getItem(modifiersKey);
+        const modifiers =
+          storedModifiers === null
+            ? matchMedia('(prefers-contrast: more)').matches
+              ? ['high-contrast']
+              : []
+            : storedModifiers.split(',').filter((id) => modifierIds.includes(id));
+
+        for (const id of modifierIds) {
+          root.classList.toggle(prefix + id, modifiers.includes(id));
+        }
       })();
     </script>
   </head>

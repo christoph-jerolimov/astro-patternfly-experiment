@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import { BASE_PATH } from '../src/site';
-import { DARK_CLASS, STORAGE_KEY } from '../src/theme';
+import { DARK_CLASS, MODIFIERS, MODIFIERS_STORAGE_KEY, STORAGE_KEY } from '../src/theme';
 
 const base = BASE_PATH.replace(/\/$/, '');
 const distDir = new URL('../dist/', import.meta.url);
@@ -455,8 +455,33 @@ describe('dark mode', () => {
     expect(head).not.toMatch(/<script[^>]*\ssrc=/);
   });
 
-  it('server-renders the theme toggle', () => {
-    expect(html).toMatch(/aria-label="Switch to the (light|dark) theme"/);
+  it('server-renders the theme menu toggle, but not its contents', () => {
+    // A closed dropdown renders nothing, the same as the overlays on the
+    // feedback page. The toggle is what has to survive server rendering.
+    expect(html).toContain('aria-label="Appearance"');
+    expect(html).not.toContain('High contrast');
+  });
+
+  it('applies every theme class before the body, not just dark', () => {
+    // A modifier applied after first paint flashes the unmodified page first,
+    // exactly as a late dark class would.
+    const head = html.slice(0, html.indexOf('<body'));
+    for (const { id } of MODIFIERS) {
+      expect(head).toContain(id);
+    }
+    expect(head).toContain(MODIFIERS_STORAGE_KEY);
+  });
+
+  it('follows prefers-contrast when no modifier choice is stored', () => {
+    // PatternFly ships no prefers-contrast query of its own, so a reader who
+    // asked their OS for more contrast gets nothing unless this bridges it.
+    expect(html).toContain('prefers-contrast: more');
+  });
+
+  it('ships no theme class in the served markup', () => {
+    // The classes are added by the pre-paint script, so the HTML itself must
+    // stay neutral or it would override the visitor's stored choice.
+    expect(html).not.toMatch(/<html[^>]*class="[^"]*pf-v6-theme-/);
   });
 });
 

@@ -21,11 +21,24 @@ export default defineConfig({
     // it instead of installing Playwright's own.
     launchOptions: { executablePath: process.env.CHROMIUM_PATH },
   },
-  // One project per theme. The site follows prefers-color-scheme until the
-  // visitor picks a theme, so a fresh context lands on the right one with
-  // nothing to click and nothing to wait for.
+  // One project per theme for the whole site. The site follows
+  // prefers-color-scheme until the visitor picks a theme, so a fresh context
+  // lands on the right one with nothing to click and nothing to wait for.
+  //
+  // The modifier matrix is a separate project because it sets its own colour
+  // scheme per describe block; left in the light and dark projects it would be
+  // captured twice over.
   projects: [
-    { name: 'light', use: { colorScheme: 'light' } },
-    { name: 'dark', use: { colorScheme: 'dark' } },
+    {
+      name: 'light',
+      testMatch: /screenshots\.spec\.ts/,
+      use: { colorScheme: 'light' },
+    },
+    {
+      name: 'dark',
+      testMatch: /screenshots\.spec\.ts/,
+      use: { colorScheme: 'dark' },
+    },
+    { name: 'themes', testMatch: /theme-matrix\.spec\.ts/ },
   ],
 });
