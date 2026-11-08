@@ -11,6 +11,7 @@ let html: string;
 let dashboard: string;
 let serversPage: string;
 let detail: string;
+let createWizard: string;
 let emptyStates: string;
 let login: string;
 let settings: string;
@@ -26,6 +27,7 @@ beforeAll(async () => {
   dashboard = await readFile(new URL('dashboard/index.html', distDir), 'utf8');
   serversPage = await readFile(new URL('servers/index.html', distDir), 'utf8');
   detail = await readFile(new URL('servers/detail/index.html', distDir), 'utf8');
+  createWizard = await readFile(new URL('servers/create/index.html', distDir), 'utf8');
   emptyStates = await readFile(new URL('empty-states/index.html', distDir), 'utf8');
   login = await readFile(new URL('login/index.html', distDir), 'utf8');
   settings = await readFile(new URL('settings/index.html', distDir), 'utf8');
@@ -225,6 +227,38 @@ describe('server detail view', () => {
     // The breadcrumb and page header never change, so they stay static.
     const islands = detail.match(/<astro-island/g) ?? [];
     expect(islands.length).toBe(2);
+  });
+});
+
+describe('create wizard', () => {
+  it('server-renders the wizard with all four steps', () => {
+    expect(createWizard).toContain('pf-v6-c-wizard');
+    for (const step of ['Basics', 'Size', 'Networking', 'Review']) {
+      expect(createWizard).toContain(`>${step}<`);
+    }
+  });
+
+  it('opens on the first step with Next already disabled', () => {
+    // The name starts empty, so the step cannot be left yet.
+    expect(createWizard).toMatch(/Next[\s\S]{0,200}disabled|disabled[\s\S]{0,200}Next/);
+  });
+
+  it('flags no step as failing before the reader has reached one', () => {
+    // Marking a step red on load scolds the reader for a field they have not
+    // had the chance to fill in.
+    expect(createWizard).not.toContain('pf-m-danger');
+  });
+
+  it('is reachable from the list view', () => {
+    expect(serversPage).toContain(`href="${base}/servers/create/"`);
+    expect(serversPage).toContain('Create server');
+  });
+
+  it('keeps Servers highlighted in the sidebar', () => {
+    const current = createWizard.match(
+      /pf-v6-c-nav__link pf-m-current"[^>]*>\s*<span[^>]*>([^<]+)</,
+    )?.[1];
+    expect(current).toBe('Servers');
   });
 });
 

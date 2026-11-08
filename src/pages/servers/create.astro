@@ -1,0 +1,34 @@
+---
+import { Breadcrumb, BreadcrumbItem, Content, PageSection, Title } from '@patternfly/react-core';
+
+import AppLayout from '../../components/AppLayout';
+import CreateServerWizard from '../../components/CreateServerWizard';
+import Layout from '../../layouts/Layout.astro';
+import { withBase } from '../../site';
+---
+
+<Layout
+  title="Create server — Astro + PatternFly"
+  description="A PatternFly wizard: a multi-step create flow with per-step validation."
+>
+  <AppLayout client:load activeItem="servers">
+    <PageSection variant="secondary">
+      <Breadcrumb>
+        <BreadcrumbItem to={withBase('/servers/')}>Servers</BreadcrumbItem>
+        <BreadcrumbItem isActive>Create</BreadcrumbItem>
+      </Breadcrumb>
+
+      <Title headingLevel="h1" size="2xl">
+        Create server
+      </Title>
+      <Content component="p">
+        A multi-step flow. Each step validates on its own and blocks Next until it passes, rather
+        than letting you reach Review and be told something three steps back is wrong.
+      </Content>
+    </PageSection>
+
+    <PageSection isFilled>
+      <CreateServerWizard client:load />
+    </PageSection>
+  </AppLayout>
+</Layout>
