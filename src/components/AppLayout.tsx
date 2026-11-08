@@ -2,6 +2,9 @@ import { useState, type ReactNode } from 'react';
 import {
   Brand,
   Button,
+  Content,
+  Flex,
+  FlexItem,
   Masthead,
   MastheadBrand,
   MastheadContent,
@@ -91,29 +94,42 @@ export default function AppLayout({
   activeItem = 'overview',
   sections = [],
 }: AppLayoutProps) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
   const masthead = (
     <Masthead>
       <MastheadMain>
         <MastheadToggle>
-          <PageToggleButton
-            variant="plain"
-            aria-label="Global navigation"
-            isSidebarOpen={isSidebarOpen}
-            onSidebarToggle={() => setIsSidebarOpen((open) => !open)}
-          >
+          {/*
+            No isSidebarOpen or onSidebarToggle: Page's isManagedSidebar keeps
+            the state. A single boolean of our own meant one thing on desktop
+            and another at mobile widths, where the toggle flipped between two
+            states that were both off-screen.
+          */}
+          <PageToggleButton variant="plain" aria-label="Global navigation">
             <BarsIcon />
           </PageToggleButton>
         </MastheadToggle>
         <MastheadBrand>
-          <MastheadLogo href={withBase('/')}>
-            <Brand
-              src={withBase('/logo.svg')}
-              alt="Astro + PatternFly"
-              heights={{ default: '36px' }}
-            />
+          <MastheadLogo href={withBase('/')} component="a">
+            <Flex
+              alignItems={{ default: 'alignItemsCenter' }}
+              gap={{ default: 'gapSm' }}
+              flexWrap={{ default: 'nowrap' }}
+            >
+              <FlexItem>
+                <Brand src={withBase('/logo.svg')} alt="" heights={{ default: '36px' }} />
+              </FlexItem>
+              <FlexItem>
+                {/*
+                  Real text rather than part of logo.svg, so it takes its
+                  colour from the theme. Below PatternFly's md breakpoint the
+                  masthead stacks the brand above the toggle and the action
+                  icons, so this still fits on a phone.
+                */}
+                <Content component="p">Astro + PatternFly</Content>
+              </FlexItem>
+            </Flex>
           </MastheadLogo>
         </MastheadBrand>
       </MastheadMain>
@@ -156,7 +172,7 @@ export default function AppLayout({
   );
 
   const sidebar = (
-    <PageSidebar isSidebarOpen={isSidebarOpen}>
+    <PageSidebar>
       <PageSidebarBody>
         <Nav aria-label="Main navigation">
           <NavList>
@@ -223,7 +239,13 @@ export default function AppLayout({
   );
 
   return (
-    <Page masthead={masthead} sidebar={sidebar} mainContainerId="main-content" isContentFilled>
+    <Page
+      masthead={masthead}
+      sidebar={sidebar}
+      mainContainerId="main-content"
+      isContentFilled
+      isManagedSidebar
+    >
       {children}
     </Page>
   );

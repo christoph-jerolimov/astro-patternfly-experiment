@@ -101,12 +101,31 @@ HTML at build time. The only other islands are `ServersTable` and
 `ServerDetailTabs`, because filtering, sorting and switching tabs cannot be
 static.
 
+## Masthead
+
+`public/logo.svg` is the mark alone; the wordmark beside it is real text in the
+masthead. PatternFly's `Brand` renders an `<img>`, and an SVG loaded as an image
+cannot see the page's CSS, so a `currentColor` wordmark inside the file stayed
+black and vanished against the dark masthead. As DOM text it takes its colour
+from the theme.
+
+Below PatternFly's `md` breakpoint the masthead switches to its own stacked
+layout — brand on the first row, toggle and action icons on the second — so the
+wordmark still fits on a phone. That is component CSS, not something this site
+configures.
+
 ## Sidebar
 
 The sidebar lists the site's pages, then the sections of whichever page is
 open. Pages live in `AppLayout`; each page passes its own `sections` and the
 `activeItem` to highlight. Section anchors are per page rather than global,
 because an anchor to a section the current page does not have scrolls nowhere.
+
+`Page` is given `isManagedSidebar`, so PatternFly owns the open/closed state and
+wires the toggle to it. The two viewports need opposite defaults — open on a
+desktop, closed behind an overlay on a phone — and a single boolean of our own
+could only match one of them, which left the mobile toggle flipping between two
+states that were both off-screen.
 
 ## Dashboard
 
