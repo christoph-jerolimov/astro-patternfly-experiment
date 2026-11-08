@@ -149,6 +149,11 @@ export default function ServersTable() {
         </ToolbarItem>
         <ToolbarGroup variant="action-group">
           <ToolbarItem>
+            <Button variant="primary" component="a" href={withBase('/servers/create/')}>
+              Create server
+            </Button>
+          </ToolbarItem>
+          <ToolbarItem>
             <Button variant="secondary" isDisabled={selected.length === 0}>
               Restart{selected.length > 0 ? ` (${selected.length})` : ''}
             </Button>

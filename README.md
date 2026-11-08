@@ -25,6 +25,7 @@ src/
 │   ├── AlertSpecimens.tsx        # alerts and banners (its own island)
 │   ├── AppLayout.tsx             # masthead + side nav (hydrated island)
 │   ├── ButtonSpecimens.tsx       # button variants and states
+│   ├── CreateServerWizard.tsx    # multi-step create flow (its own island)
 │   ├── DashboardActivity.tsx     # recent activity list
 │   ├── DashboardStats.tsx        # headline metric cards
 │   ├── DashboardUtilization.tsx  # utilization bars
@@ -62,6 +63,7 @@ src/
 │   ├── servers.astro      # the list view demo
 │   ├── settings.astro     # the preferences form demo
 │   └── servers/
+│       ├── create.astro   # the wizard demo
 │       └── detail.astro   # the detail view demo
 ├── site.ts                # BASE_PATH, shared with astro.config.mjs
 └── theme.ts               # the four theme classes and storage keys
@@ -84,6 +86,7 @@ screenshots/                # committed, regenerate with npm run screenshots
 ├── index-{light,dark}.png
 ├── login-{light,dark}.png
 ├── servers-{light,dark}.png
+├── servers-create-{light,dark}.png
 ├── settings-{light,dark}.png
 └── servers-detail-{light,dark}.png
 
@@ -144,6 +147,23 @@ they stay static HTML.
 It is a static route rather than `[id].astro` because the screenshot suite skips
 dynamic routes: building a URL for one needs parameters. Every row in the list
 links here.
+
+## Create wizard
+
+`/servers/create/` is a four-step create flow, reached from the Create button on
+the list view.
+
+Each step **validates on its own and disables Next until it passes**, rather
+than letting the reader reach Review and be told that something three steps back
+is wrong. The last step is a decision rather than a formality: Finish stays
+disabled until the cost checkbox is ticked.
+
+A step is only marked red once it has been **reached**. The obvious wiring —
+`status={isValid ? 'default' : 'error'}` — flags Basics and Review as failing
+the moment the page loads, which scolds the reader for fields they have not had
+the chance to fill in. Steps are tracked as visited through `onStepChange`, and
+an untouched empty name blocks Next without turning the step red; a name that
+was typed and is invalid does.
 
 ## Empty states
 
