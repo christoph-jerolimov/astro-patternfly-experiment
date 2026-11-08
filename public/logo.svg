@@ -1,9 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="196" height="36" viewBox="0 0 196 36" role="img" aria-label="Astro + PatternFly">
-  <g fill="none" fill-rule="evenodd">
-    <circle cx="18" cy="18" r="14" fill="#0066cc" />
-    <path d="M18 8l7 18-7-4-7 4z" fill="#fff" />
-    <text x="42" y="24" font-family="RedHatText, Helvetica, Arial, sans-serif" font-size="17" fill="currentColor">
-      Astro + PatternFly
-    </text>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" role="img" aria-label="Astro and PatternFly">
+  <!--
+    The mark only. The wordmark beside it is real text in the masthead rather
+    than part of this file: an SVG loaded through <img> cannot see the page's
+    CSS, so text in here could not follow the theme and went black on black in
+    dark mode.
+  -->
+  <circle cx="18" cy="18" r="14" fill="#0066cc" />
+  <path d="M18 8l7 18-7-4-7 4z" fill="#fff" />
 </svg>
